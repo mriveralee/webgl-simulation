@@ -1,0 +1,36 @@
+{
+  "name": "webgl-simulation",
+  "version": "1.0.0",
+  "description": "Web-Gl Simulation Tool for Research",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "start": "budo server.js --live",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mriveralee/webgl-simulation.git"
+  },
+  "keywords": [
+    "three.js",
+    "3D",
+    "simulation"
+  ],
+  "author": "mriveralee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mriveralee/webgl-simulation/issues"
+  },
+  "homepage": "https://github.com/mriveralee/webgl-simulation#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "budo": "^9.4.7"
+  }
+}
