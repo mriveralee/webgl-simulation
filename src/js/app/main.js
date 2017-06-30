@@ -73,7 +73,7 @@ export default class Main {
     this.particleSystem.makeParticlesTest();
 
     // Set up rStats if dev environment
-    if(Config.isDev) {
+    if(Config.showStats()) {
       bS = new BrowserStats();
       glS = new glStats();
       tS = new threeStats(this.renderer.threeRenderer);
@@ -98,6 +98,7 @@ export default class Main {
         ],
         plugins: [bS, tS, glS]
       });
+
     }
 
     // Instantiate texture class
@@ -119,12 +120,14 @@ export default class Main {
       // All loaders done now
       this.manager.onLoad = () => {
         // Set up interaction manager with the app now that the model is finished loading
-        new Interaction(this.renderer.threeRenderer, this.scene, this.camera.threeCamera, this.controls.threeControls);
+        new Interaction(
+          this.renderer.threeRenderer,
+          this.scene,
+          this.camera.threeCamera,
+          this.controls.threeControls);
 
         // Add dat.GUI controls if dev
-        if(Config.isDev) {
-          new DatGUI(this, this.model.obj);
-        }
+        let controls = new DatGUI(this, this.model.obj);
 
         // Everything is now fully loaded
         Config.isLoaded = true;
@@ -139,7 +142,7 @@ export default class Main {
 
   render() {
     // Render rStats if Dev
-    if(Config.isDev) {
+    if(Config.showStats()) {
       rS('frame').start();
       glS.start();
 
@@ -153,7 +156,7 @@ export default class Main {
     this.renderer.render(this.scene, this.camera.threeCamera);
 
     // rStats has finished determining render call now
-    if(Config.isDev) {
+    if(Config.showStats()) {
       rS('render').end(); // render finished
       rS('frame').end(); // frame finished
 

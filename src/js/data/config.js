@@ -8,6 +8,9 @@ export default {
   isRotating: true,
   isMouseMoving: false,
   isMouseOver: false,
+  showStats: () => {
+    return false && this.isDev;
+  },
   maxAnisotropy: 1,
   dpr: 1,
   easing: TWEEN.Easing.Quadratic.InOut,

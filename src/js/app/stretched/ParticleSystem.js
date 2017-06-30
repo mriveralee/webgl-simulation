@@ -44,7 +44,7 @@ export default class ParticleSystem extends Geometry {
       if (i % 2 == 0) {
         // *____*
         // | A /|
-        // | /B |
+        // | / B|
         // *----*
         // Triangle A
         orderIndices.push(i);
@@ -70,7 +70,7 @@ export default class ParticleSystem extends Geometry {
       }
     }
     this.makeParticles(positions, orderIndices);
-    this.place([0, -20, 0], [0, 0, 0]);
+    this.place([0, -20, 0], [0, 0, 0], true, true);
   }
 
 }

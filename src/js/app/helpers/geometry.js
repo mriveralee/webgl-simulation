@@ -25,7 +25,7 @@ export default class Geometry {
     }
   }
 
-  place(position, rotation) {
+  place(position, rotation, showWireframe=false, showPoints=false) {
     //const material = new Material(0xeeeeee).standard;
     const material = new Material(0xffffff).standard;
 
@@ -38,9 +38,25 @@ export default class Geometry {
     if(Config.shadow.enabled) {
       mesh.receiveShadow = true;
     }
-    mesh.material.wireframe = true;
+
+    // Optional Wireframe
+    if (showWireframe) {
+      mesh.material.wireframe = showWireframe;
+    }
+
+    // Add main mesh to the scene!
     this.scene.add(mesh);
 
-
+    // Optional Points
+    if (showPoints) {
+      const pointMaterial = new THREE.PointsMaterial({
+        color: 0x800080,
+        //sizeAttenuation: false,
+      });
+      const pointCloudMesh = new THREE.Points(this.geo, pointMaterial);
+      pointCloudMesh.position.set(...position);
+      pointCloudMesh.rotation.set(...rotation);
+      this.scene.add(pointCloudMesh);
+    }
   }
 }

@@ -6,7 +6,7 @@ import Main from './app/main';
 if(__ENV__ == 'dev') {
   console.log('----- RUNNING IN DEV ENVIRONMENT! -----');
 
-  Config.isDev = true;
+  //Config.isDev = true;
 }
 
 function init() {
