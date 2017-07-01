@@ -50,8 +50,7 @@ export default class Geometry {
     // Optional Points
     if (showPoints) {
       const pointMaterial = new THREE.PointsMaterial({
-        color: 0x800080,
-        //sizeAttenuation: false,
+        color: 0x800080
       });
       const pointCloudMesh = new THREE.Points(this.geo, pointMaterial);
       pointCloudMesh.position.set(...position);

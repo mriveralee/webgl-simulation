@@ -32,6 +32,11 @@ export default class Interaction {
       if(this.keyboard.eventMatches(event, 'escape')) {
         console.log('Escape pressed');
       }
+
+      if (this.keyboard.eventMatches(event, 'space')) {
+        console.log('Space pressed');
+        Config.animate = !Config.animate;
+      }
     });
   }
 

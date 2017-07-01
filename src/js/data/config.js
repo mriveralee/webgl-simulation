@@ -8,6 +8,9 @@ export default {
   isRotating: true,
   isMouseMoving: false,
   isMouseOver: false,
+  useGravity: true,
+  gravity: -9.8,
+  animate: false,
   showStats: () => {
     return false && this.isDev;
   },
@@ -110,7 +113,7 @@ export default {
     y: 0,
     z: 0
   },
-  timeStep: 0.25,
+  timeStep: 0.016,
   integrators: {
       sympletic: 0,
       forward: 1,

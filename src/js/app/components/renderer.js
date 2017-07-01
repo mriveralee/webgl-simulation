@@ -14,7 +14,7 @@ export default class Renderer {
 
     // Set clear color to fog to enable fog or to hex color for no fog
     this.threeRenderer.setClearColor(
-      scene.fog && scene.fog.color ? scence.fog.color : 0xFFFFFF);
+      scene.fog && scene.fog.color ? scene.fog.color : 0xFFFFFF);
     this.threeRenderer.setPixelRatio(window.devicePixelRatio); // For retina
 
     // Appends canvas

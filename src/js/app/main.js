@@ -24,7 +24,7 @@ import DatGUI from './managers/datGUI';
 import Config from './../data/config';
 
 // Stretched
-import ParticleSystem from './stretched/ParticleSystem';
+import ParticleSystem from './stretched/particleSystem';
 // -- End of imports
 
 // Local vars for rStats
@@ -42,7 +42,7 @@ export default class Main {
 
     // Main scene creation
     this.scene = new THREE.Scene();
-    //this.scene.fog = new THREE.FogExp2(Config.fog.color, Config.fog.near);
+    this.scene.fog = new THREE.FogExp2(Config.fog.color, Config.fog.near);
 
     // Get Device Pixel Ratio first for retina
     if(window.devicePixelRatio) {
@@ -153,6 +153,9 @@ export default class Main {
     }
 
     // Call render function and pass in created scene and camera
+    if (Config.animate) {
+      this.particleSystem.integrate(Config.timeStep);
+    }
     this.renderer.render(this.scene, this.camera.threeCamera);
 
     // rStats has finished determining render call now
