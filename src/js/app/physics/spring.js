@@ -1,29 +1,29 @@
 import * as THREE from 'three';
 
-
-// A base class for the particleSystem that will hold a group of goodies
-
-export default class Spring  {
-  constructor(indexA, indexB, restLength, stiffness) {
+export default class Spring {
+  constructor(particleIndexA, particleIndexB, restLength, stiffness = 1000) {
     // Ensure its a number :)
-    this.indexA = +indexA;
-    this.indexB = +indexB;
+    this.indexA = +particleIndexA;
+    this.indexB = +particleIndexB;
     this.restLength = +restLength;
-    this.k = +stiffness;
+    this.stiffness = +stiffness;
   }
 
   resolveConstraint(positions, forces) {
-    let posA = positions[this.indexA];
-    let posB = positions[this.indexB];
+    const posA = positions[this.indexA].clone();
+    const posB = positions[this.indexB].clone();
+    let [forceA, forceB] = this._computeForces(posA, posB);
+    forces[this.indexA].add(forceA);
+    forces[this.indexB].add(forceB);
+  }
 
+  _computeForces(posA, posB) {
     let deltaPosA = posA.sub(posB);
     let lengthDeltaPosA = deltaPosA.length();
     deltaPosA = deltaPosA.normalize();
-    let forceA = deltaPosA.multiply(-1 * this.stiffness * lengthDeltaPosA);
-    let forceB = -forceA;
-
-    forces[posA] += forceA;
-    forces[posB] += forceB;
+    let forceA = deltaPosA.multiplyScalar(-1 * this.stiffness * lengthDeltaPosA);
+    let forceB = forceA.multiplyScalar(-1);
+    return [forceA, forceB];
   }
 
 }

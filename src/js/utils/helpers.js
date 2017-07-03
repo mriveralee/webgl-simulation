@@ -1,5 +1,6 @@
 // Provides simple static functions that are used multiple times in the app
 export default class Helpers {
+  
   static throttle(fn, threshhold, scope) {
     threshhold || (threshhold = 250);
     let last, deferTimer;

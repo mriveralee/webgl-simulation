@@ -63,13 +63,13 @@ var config = {
     near: 0.0008
   },
   camera: {
-    fov: 100,
+    fov: 400,
     near: 2,
     far: 1000,
     aspect: 1,
-    posX: 0,
-    posY: 30,
-    posZ: 40
+    posX: 10,
+    posY: 10,
+    posZ: 70
   },
   controls: {
     autoRotate: false,
@@ -86,9 +86,9 @@ var config = {
     dampingFactor: 0.5,
     enableZoom: true,
     target: {
-      x: 0,
-      y: 0,
-      z: 0
+      x: 5,
+      y: 10,
+      z: 15
     }
   },
   ambientLight: {

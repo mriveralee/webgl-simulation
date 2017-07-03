@@ -3,8 +3,10 @@ import * as THREE from 'three';
 import Config from './../../data/config'
 import Geometry from './../helpers/geometry';
 import Spring from './../physics/spring';
+import ZeroLengthSpring from './../physics/zeroLengthSpring';
 
-// A base class for the particleSystem that will hold a group of goodies
+
+// A base class for the particleSystem that will hold a group of particles
 
 export default class ParticleSystem extends Geometry {
   constructor(scene, gridDim = 20) {
@@ -29,14 +31,18 @@ export default class ParticleSystem extends Geometry {
     let gravity = new THREE.Vector3(...Config.getGravityComponents());
     for (let i = 0; i < this.numParticles; i++) {
       // Clear forces
-      this.forces[i].set(0, 0, 0);
+      if (!this.forces[i].isVector3) {
+        console.log("nana");
+        this.forces[i] = new THREE.Vector3();
+      }
+      this.forces[i].multiplyScalar(0);
       // Gravity?
       if (Config.useGravity) {
         this.forces[i].addScaledVector(gravity, this.masses[i]);
       }
     }
     // TODO enable constraints solving
-    //this.resolveConstraints();
+    this.resolveConstraints();
   }
 
   computeAccelerations() {
@@ -55,10 +61,9 @@ export default class ParticleSystem extends Geometry {
     this.computeForces();
     let accelerations = this.computeAccelerations();
     for (let i = 0; i < this.numParticles; i++) {
-      // Integrate using sympletic euler
       this.velocities[i].addScaledVector(accelerations[i], timeStep);
-      //this.positions[i].addScaledVector(this.velocities[i], timeStep);
       this.geo.vertices[i].addScaledVector(this.velocities[i], timeStep);
+      //this.positions[i].addScaledVector(this.velocities[i], timeStep);
       this.geo.verticesNeedUpdate = true;
       // this.geo.normalsNeedUpdate = true;
       // this.geo.colorsNeedUpdate = true;
@@ -132,7 +137,8 @@ export default class ParticleSystem extends Geometry {
     this.makeParticles(positions, orderIndices);
     this.place([0, -20, 0], [0, 0, 0], true, true);
     // Make the springs!
-    this.createSprings();
+    //this.createSprings();
+    this.createZeroLengthSprings();
   }
 
   createSprings() {
@@ -154,7 +160,12 @@ export default class ParticleSystem extends Geometry {
     }
   }
 
-
-
+  createZeroLengthSprings() {
+    const points = this.geo.vertices;
+    const dim = this.gridDim;
+    for (let i = points.length - dim; i < points.length; i++) {
+      this.constraints.push(new ZeroLengthSpring(i, points[i]));
+    }
+  }
 
 }
