@@ -26,12 +26,13 @@ export default class ParticleSystem extends Geometry {
   }
 
   computeForces() {
+    let gravity = new THREE.Vector3(...Config.getGravityComponents());
     for (let i = 0; i < this.numParticles; i++) {
       // Clear forces
       this.forces[i].set(0, 0, 0);
       // Gravity?
       if (Config.useGravity) {
-        this.forces[i].setComponent(1, Config.gravity * this.masses[i]);
+        this.forces[i].addScaledVector(gravity, this.masses[i]);
       }
     }
     // TODO enable constraints solving
@@ -48,19 +49,19 @@ export default class ParticleSystem extends Geometry {
   }
 
 
-  // TODO include other integration schemes?
+  // Integration using Sympletic euler
+  // https://en.wikipedia.org/wiki/Semi-implicit_Euler_method
   integrate(timeStep) {
-    // TODO: do sympletic euler here
     this.computeForces();
     let accelerations = this.computeAccelerations();
     for (let i = 0; i < this.numParticles; i++) {
-      //TODO make this actually verlet integration/sympletic
-        this.velocities[i].addScaledVector(accelerations[i], timeStep);
-        //this.positions[i].addScaledVector(this.velocities[i], timeStep);
-        this.geo.vertices[i].addScaledVector(this.velocities[i], timeStep);
-        this.geo.verticesNeedUpdate = true;
-        // this.geo.normalsNeedUpdate = true;
-        // this.geo.colorsNeedUpdate = true;
+      // Integrate using sympletic euler
+      this.velocities[i].addScaledVector(accelerations[i], timeStep);
+      //this.positions[i].addScaledVector(this.velocities[i], timeStep);
+      this.geo.vertices[i].addScaledVector(this.velocities[i], timeStep);
+      this.geo.verticesNeedUpdate = true;
+      // this.geo.normalsNeedUpdate = true;
+      // this.geo.colorsNeedUpdate = true;
     }
   }
 

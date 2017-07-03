@@ -1,7 +1,16 @@
 import TWEEN from 'tween.js';
 
 // This object contains the state of the app
-export default {
+
+var getGravity = () => {
+  return -9.8;
+};
+
+var getUpComponents = () => {
+  return [0, 1, 0];
+};
+
+var config = {
   isDev: false,
   isLoaded: false,
   isTweening: false,
@@ -9,10 +18,22 @@ export default {
   isMouseMoving: false,
   isMouseOver: false,
   useGravity: true,
-  gravity: -9.8,
+  gravity: () => {
+    return getGravity();
+  },
+  getUpComponents: () => {
+    return getUpComponents();
+  },
+  getGravityComponents: () => {
+    var up = getUpComponents();
+    for (let i = 0; i < up.length; i++) {
+      up[i] *= getGravity();
+    }
+    return up;
+  },
   animate: false,
   showStats: () => {
-    return false && this.isDev;
+    return false && config.isDev;
   },
   maxAnisotropy: 1,
   dpr: 1,
@@ -42,7 +63,7 @@ export default {
     near: 0.0008
   },
   camera: {
-    fov: 40,
+    fov: 100,
     near: 2,
     far: 1000,
     aspect: 1,
@@ -120,3 +141,5 @@ export default {
       backward: 2,
   }
 };
+
+export default config;
