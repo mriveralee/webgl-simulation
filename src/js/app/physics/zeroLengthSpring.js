@@ -12,8 +12,8 @@ export default class ZeroLengthSpring extends Spring {
   resolveConstraint(positions, forces) {
     let posA = this.restPosition.clone();
     let posB = positions[this.indexA].clone();
-    let f = this._computeForces(posA, posB);
-    forces[this.indexA].add(f[0]);
+    let forceA = this._computeForces(posA, posB);
+    forces[this.indexA].add(forceA);
   }
 
   _computeForces(posA, posB) {
@@ -21,8 +21,7 @@ export default class ZeroLengthSpring extends Spring {
     let lengthDeltaPosA = deltaPosA.length();
     deltaPosA = deltaPosA.normalize();
     let forceA = deltaPosA.multiplyScalar(-1 * this.stiffness * lengthDeltaPosA);
-    let forceB = forceA.multiplyScalar(-1);
-    return [forceA, forceB];
+    return forceA;
   }
 
 }

@@ -137,7 +137,7 @@ export default class ParticleSystem extends Geometry {
     this.makeParticles(positions, orderIndices);
     this.place([0, -20, 0], [0, 0, 0], true, true);
     // Make the springs!
-    //this.createSprings();
+    this.createSprings();
     this.createZeroLengthSprings();
   }
 
