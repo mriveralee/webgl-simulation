@@ -46,12 +46,6 @@ export default class ParticleSystem extends Geometry {
     }
     // Resolve any spring constraints
     this.resolveConstraints();
-    // Apply some damping to velocity due to air resistant etc.
-    if (Config.useDamping) {
-      for (let i = 0; i < this.numParticles; i++) {
-        this.velocities[i].multiplyScalar(Config.dampingConstant);
-      }
-    }
   }
 
   computeAccelerations() {
@@ -69,12 +63,16 @@ export default class ParticleSystem extends Geometry {
   integrate(timeStep) {
     this.computeForces();
     this.computeAccelerations();
+
+    // Apply some damping to velocity for air resistance etc.
+    let dampingFactor =
+      Config.useVelocityDamping ? Config.velocityDampingConstant : 0;
+
     for (let i = 0; i < this.numParticles; i++) {
-      //let oldVel = this.velocities[i].clone();
       this.velocities[i].addScaledVector(this.accelerations[i], timeStep);
+      this.velocities[i].multiplyScalar(1 - dampingFactor);
       this.geo.vertices[i].addScaledVector(this.velocities[i], timeStep);
       //this.positions[i].addScaledVector(this.velocities[i], timeStep);
-
     }
     this.geo.verticesNeedUpdate = true;
     this.geo.normalsNeedUpdate = true;
@@ -156,9 +154,9 @@ export default class ParticleSystem extends Geometry {
   }
 
   createSprings() {
-    this._createStructuralSprings(190);
-    this._createBendSprings(60);
-    this._createShearSprings(15);
+    this._createStructuralSprings(30);
+    this._createBendSprings(20);
+    this._createShearSprings(10);
     this._createFixedPositionSprings(150);
   }
 

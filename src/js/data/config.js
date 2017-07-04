@@ -17,8 +17,8 @@ var config = {
   isRotating: true,
   isMouseMoving: false,
   isMouseOver: false,
-  useDamping: true,
-  dampingConstant: 0.99,
+  useVelocityDamping: true,
+  velocityDampingConstant: 0.0035,
   useGravity: true,
   gravity: () => {
     return getGravity();
