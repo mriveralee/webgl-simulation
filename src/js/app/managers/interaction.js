@@ -4,12 +4,13 @@ import Config from '../../data/config';
 
 // Manages all input interactions
 export default class Interaction {
-  constructor(renderer, scene, camera, controls) {
+  constructor(renderer, scene, camera, controls, onReset) {
     // Properties
     this.renderer = renderer;
     this.scene = scene;
     this.camera = camera;
     this.controls = controls;
+    this.onReset = onReset;
 
     this.timeout = null;
 
@@ -36,6 +37,12 @@ export default class Interaction {
       if (this.keyboard.eventMatches(event, 'space')) {
         console.log('Space pressed');
         Config.animate = !Config.animate;
+      }
+
+      if (this.keyboard.eventMatches(event, 'r')) {
+        if (this.onReset) {
+          this.onReset();
+        }
       }
     });
   }

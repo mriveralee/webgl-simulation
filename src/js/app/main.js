@@ -56,26 +56,9 @@ export default class Main {
     // Components instantiation
     this.camera = new Camera(this.renderer.threeRenderer);
     this.controls = new Controls(this.camera.threeCamera, container);
-    this.light = new Light(this.scene);
 
-    // Create and place lights in scene
-    const lights = ['ambient', 'directional', 'point', 'hemi'];
-    for(let i = 0; i < lights.length; i++) {
-      this.light.place(lights[i]);
-    }
 
-    // Create and place geo in scene
-    //this.geometry = new Geometry(this.scene);
-    //this.geometry.make('plane')(150, 150, 10, 10);
-    //this.geometry.place([0, -20, 0], [Math.PI/2, 0, 0]);
-
-    // TODO: add things to the scene
-    this.particleSystem = new ParticleSystem(this.scene, 30);
-    this.particleSystem.makeParticlesTest();
-
-    // Draw axes in scene
-    SceneHelper.createPrincipalAxes(this.scene);
-
+    this._resetScene();
     // Set up rStats if dev environment
     if(Config.showStats()) {
       bS = new BrowserStats();
@@ -111,11 +94,9 @@ export default class Main {
     // Start loading the textures and then go on to load the model after the texture Promises have resolved
     this.texture.load().then(() => {
       this.manager = new THREE.LoadingManager();
-
       // Textures loaded, load model
       // this.model = new Model(this.scene, this.manager, this.texture.textures);
       // this.model.load();
-
       // onProgress callback
       this.manager.onProgress = (item, loaded, total) => {
         console.log(`${item}: ${loaded} ${total}`);
@@ -123,11 +104,16 @@ export default class Main {
       // All loaders done now
       this.manager.onLoad = () => {
         // Set up interaction manager with the app now that the model is finished loading
+        var that = this;
+        var resetCallback = () => {
+            that.onReset();
+        }
         new Interaction(
           this.renderer.threeRenderer,
           this.scene,
           this.camera.threeCamera,
-          this.controls.threeControls);
+          this.controls.threeControls,
+          resetCallback);
 
         // Add dat.GUI controls if dev
         let controls = new DatGUI(this, this.model.obj);
@@ -196,5 +182,26 @@ export default class Main {
 
     // RAF
     requestAnimationFrame(this.render.bind(this)); // Bind the main class instead of window object
+  }
+
+  onReset() {
+    this._resetScene();
+  }
+
+  _resetScene() {
+    if (this.scene) {
+      this.scene.remove(...this.scene.children);
+    }
+    this.light = new Light(this.scene);
+    // Create and place lights in scene
+    const lights = ['ambient', 'directional', 'point', 'hemi'];
+    for(let i = 0; i < lights.length; i++) {
+      this.light.place(lights[i]);
+    }
+    // TODO: add things to the scene
+    this.particleSystem = new ParticleSystem(this.scene, 30);
+    this.particleSystem.makeParticlesTest();
+    // Draw axes in scene
+    SceneHelper.createPrincipalAxes(this.scene);
   }
 }

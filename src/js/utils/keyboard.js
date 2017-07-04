@@ -5,7 +5,8 @@ const ALIAS = {
   'down'		: 40,
   'space'		: 32,
   'tab'		  : 9,
-  'escape'	: 27
+  'escape'	: 27,
+  'r'       : 82,
 };
 
 export default class Keyboard {
