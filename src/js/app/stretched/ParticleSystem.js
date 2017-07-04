@@ -13,7 +13,7 @@ export default class ParticleSystem extends Geometry {
     super(scene);
     this.scene = scene;
     this.geo = null;
-    this.gridDim = 20;
+    this.gridDim = Math.max(1, gridDim);
     this.numParticles = this.gridDim * this.gridDim;
     this.masses = [];
     this.forces = [];
@@ -65,8 +65,8 @@ export default class ParticleSystem extends Geometry {
       this.geo.vertices[i].addScaledVector(this.velocities[i], timeStep);
       //this.positions[i].addScaledVector(this.velocities[i], timeStep);
       this.geo.verticesNeedUpdate = true;
-      // this.geo.normalsNeedUpdate = true;
-      // this.geo.colorsNeedUpdate = true;
+      this.geo.normalsNeedUpdate = true;
+      this.geo.colorsNeedUpdate = true;
     }
   }
 
@@ -116,22 +116,26 @@ export default class ParticleSystem extends Geometry {
         orderIndices.push(i + 1);
         orderIndices.push(i + dim);
         // Triangle B
+        orderIndices.push(i + dim);
         orderIndices.push(i + 1);
         orderIndices.push((i + 1) + dim);
-        orderIndices.push(i + dim);
+
       } else {
         // *____*
         // | \ C|
         // |D \ |
         // *----*
         // Triangle C
+
+
+        orderIndices.push(i + dim);
         orderIndices.push(i);
         orderIndices.push((i + 1) + dim);
-        orderIndices.push(i + dim);
         // Triangle D
+        orderIndices.push((i + 1) + dim);
         orderIndices.push(i);
         orderIndices.push(i + 1);
-        orderIndices.push((i + 1) + dim);
+
       }
     }
     this.makeParticles(positions, orderIndices);
@@ -147,16 +151,21 @@ export default class ParticleSystem extends Geometry {
     let maxColumn = points.length - dim;
     let minColumn = dim;
     for (let i = 0; i < points.length; i++) {
-      let div = Math.floor(i / dim);
-      // TODO compute rest length for these points
+      let placeInDim = Math.floor(i / dim);
+      let springLength = 0;
       // TODO pass a stiffness constant :/
-      if (div >= 1) {
+      if (placeInDim >= 1) {
         // before column
-        this.constraints.push(new Spring(i, i - dim));
+        springLength = (points[i].clone().sub(points[i - dim])).length();
+        this.constraints.push(new Spring(i, i - dim, springLength));
       }
-      if (div + 1 < dim) {
+
+      if (placeInDim + 1 < dim) {
+        springLength = points[i].clone().sub(points[i + 1]).length();
         this.constraints.push(new Spring(i, i + 1));
       }
+
+
     }
   }
 

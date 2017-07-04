@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 
 import Material from './material';
+import MeshHelper from './../helpers/meshHelper';
+
 
 import Config from '../../data/config';
 
@@ -28,7 +30,6 @@ export default class Geometry {
   place(position, rotation, showWireframe=false, showPoints=false) {
     //const material = new Material(0xeeeeee).standard;
     const material = new Material(0xffffff).standard;
-
     const mesh = new THREE.Mesh(this.geo, material);
 
     // Use ES6 spread to set position and rotation from passed in array
@@ -39,13 +40,12 @@ export default class Geometry {
       mesh.receiveShadow = true;
     }
 
-    // Optional Wireframe
-    if (showWireframe) {
-      mesh.material.wireframe = showWireframe;
-    }
-
     // Add main mesh to the scene!
     this.scene.add(mesh);
+    // this.mH = new MeshHelper(this.scene, mesh, this.geo);
+    // Transparency
+    mesh.material.transparent = true;
+    mesh.material.opacity = 0.5;
 
     // Optional Points
     if (showPoints) {
@@ -57,5 +57,17 @@ export default class Geometry {
       pointCloudMesh.rotation.set(...rotation);
       this.scene.add(pointCloudMesh);
     }
+
+    // Optional Wireframe
+    if (showWireframe) {
+      mesh.material.wireframe = showWireframe;
+      // TODO the code below draws a weird wireframe o_o
+      //const wireframe = new THREE.EdgesGeometry(this.geo);
+      //const wireframeLines = new THREE.LineSegments(this.geo);
+      //wireframeLines.position.set(...position);
+      //wireframeLines.rotation.set(...rotation);
+      //this.scene.add(wireframeLines);
+    }
+
   }
 }

@@ -3,15 +3,15 @@ import * as THREE from 'three';
 import Spring from './../physics/spring';
 
 export default class ZeroLengthSpring extends Spring {
-  constructor(particleIndex, restPosition, stiffness = 100) {
+  constructor(particleIndex, restPosition, stiffness = 10000) {
     // There's no second index for the spring and the length is 0
     super(particleIndex, -1, 0, stiffness);
     this.restPosition = restPosition.clone();
   }
 
   resolveConstraint(positions, forces) {
-    let posA = this.restPosition.clone();
-    let posB = positions[this.indexA].clone();
+    let posA = positions[this.indexA].clone();
+    let posB = this.restPosition.clone();
     let forceA = this._computeForces(posA, posB);
     forces[this.indexA].add(forceA);
   }

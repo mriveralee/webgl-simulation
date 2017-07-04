@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 export default class Spring {
-  constructor(particleIndexA, particleIndexB, restLength, stiffness = 0.001) {
+  constructor(particleIndexA, particleIndexB, restLength, stiffness = 1000) {
     // Ensure its a number :)
     this.indexA = +particleIndexA;
     this.indexB = +particleIndexB;
@@ -21,7 +21,8 @@ export default class Spring {
     let deltaPosA = posA.sub(posB);
     let lengthDeltaPosA = deltaPosA.length();
     deltaPosA = deltaPosA.normalize();
-    let forceA = deltaPosA.multiplyScalar(-1 * this.stiffness * lengthDeltaPosA);
+    let forceA = deltaPosA.multiplyScalar(
+      -1 * this.stiffness * (lengthDeltaPosA - this.restLength));
     let forceB = forceA.clone().multiplyScalar(-1);
     return [forceA, forceB];
   }

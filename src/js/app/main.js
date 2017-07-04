@@ -11,6 +11,7 @@ import Controls from './components/controls';
 
 // Helpers
 import Geometry from './helpers/geometry';
+import SceneHelper from './helpers/SceneHelper';
 
 // Model
 import Texture from './model/texture';
@@ -68,9 +69,12 @@ export default class Main {
     //this.geometry.make('plane')(150, 150, 10, 10);
     //this.geometry.place([0, -20, 0], [Math.PI/2, 0, 0]);
 
-    // TODO: add things to this.scene
+    // TODO: add things to the scene
     this.particleSystem = new ParticleSystem(this.scene);
     this.particleSystem.makeParticlesTest();
+
+    // Draw axes in scene
+    SceneHelper.createPrincipalAxes(this.scene);
 
     // Set up rStats if dev environment
     if(Config.showStats()) {
