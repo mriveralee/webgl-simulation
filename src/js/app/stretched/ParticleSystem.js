@@ -93,8 +93,8 @@ export default class ParticleSystem extends Geometry {
     for (let i = 0; i < dim; i++) {
       for (let j = 0; j < dim; j++) {
         positions.push(new THREE.Vector3(
-          j * 4,
-          i * 3,
+          j * 1.6,
+          i * 1.2,
           30));
       }
     }
@@ -126,8 +126,6 @@ export default class ParticleSystem extends Geometry {
         // |D \ |
         // *----*
         // Triangle C
-
-
         orderIndices.push(i + dim);
         orderIndices.push(i);
         orderIndices.push((i + 1) + dim);
@@ -145,10 +143,10 @@ export default class ParticleSystem extends Geometry {
   }
 
   createSprings() {
-    this._createStructuralSprings(1000);
-    this._createBendSprings(2000);
-    this._createShearSprings(100);
-    this._createFixedPositionSprings(2000);
+    this._createStructuralSprings(1700);
+    this._createBendSprings(900);
+    this._createShearSprings(800);
+    this._createFixedPositionSprings(1200);
   }
 
   _createStructuralSprings(stiffness = 100) {
@@ -233,7 +231,7 @@ export default class ParticleSystem extends Geometry {
     const points = this.geo.vertices;
     const dim = this.gridDim;
     for (let i = points.length - dim; i < points.length; i++) {
-      if (i % 5 == 0) {
+      if (i % dim == 0) {
         this.constraints.push(new ZeroLengthSpring(i, points[i], stiffness));
       }
     }

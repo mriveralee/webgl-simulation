@@ -70,7 +70,7 @@ export default class Main {
     //this.geometry.place([0, -20, 0], [Math.PI/2, 0, 0]);
 
     // TODO: add things to the scene
-    this.particleSystem = new ParticleSystem(this.scene);
+    this.particleSystem = new ParticleSystem(this.scene, 30);
     this.particleSystem.makeParticlesTest();
 
     // Draw axes in scene

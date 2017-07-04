@@ -55,7 +55,7 @@ export default class Geometry {
       const pointCloudMesh = new THREE.Points(this.geo, pointMaterial);
       pointCloudMesh.position.set(...position);
       pointCloudMesh.rotation.set(...rotation);
-      this.scene.add(pointCloudMesh);
+      //this.scene.add(pointCloudMesh);
     }
 
     // Optional Wireframe
