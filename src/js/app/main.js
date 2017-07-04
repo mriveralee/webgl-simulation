@@ -113,14 +113,13 @@ export default class Main {
       this.manager = new THREE.LoadingManager();
 
       // Textures loaded, load model
-      this.model = new Model(this.scene, this.manager, this.texture.textures);
-      this.model.load();
+      // this.model = new Model(this.scene, this.manager, this.texture.textures);
+      // this.model.load();
 
       // onProgress callback
       this.manager.onProgress = (item, loaded, total) => {
         console.log(`${item}: ${loaded} ${total}`);
       };
-
       // All loaders done now
       this.manager.onLoad = () => {
         // Set up interaction manager with the app now that the model is finished loading
@@ -137,6 +136,13 @@ export default class Main {
         Config.isLoaded = true;
         this.container.querySelector('#loading').style.display = 'none';
       };
+
+      // TODO REMOVE when we actually use loading
+      if (!this.model) {
+        // TODO: REMOVE
+        this.manager.onLoad();
+      }
+
     });
     this.container.querySelector('#loading').style.display = 'none';
 
