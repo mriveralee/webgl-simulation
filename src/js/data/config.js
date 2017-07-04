@@ -3,7 +3,7 @@ import TWEEN from 'tween.js';
 // This object contains the state of the app
 
 var getGravity = () => {
-  return -9.8;
+  return -9.81;
 };
 
 var getUpComponents = () => {
@@ -17,6 +17,8 @@ var config = {
   isRotating: true,
   isMouseMoving: false,
   isMouseOver: false,
+  useDamping: true,
+  dampingConstant: 0.99,
   useGravity: true,
   gravity: () => {
     return getGravity();
@@ -36,7 +38,7 @@ var config = {
     return false && config.isDev;
   },
   maxAnisotropy: 1,
-  dpr: 1,
+  dpr: window.devicePixelRatio,
   easing: TWEEN.Easing.Quadratic.InOut,
   duration: 500,
   model: {
@@ -63,32 +65,32 @@ var config = {
     near: 0.0008
   },
   camera: {
-    fov: 400,
-    near: 2,
+    fov: 30,
+    near: 10,
     far: 1000,
-    aspect: 1,
-    posX: 10,
-    posY: 10,
-    posZ: 70
+    aspect: 1, // updated using window.devicePixelRatio
+    posX: 0,
+    posY: -10,
+    posZ: 200
   },
   controls: {
     autoRotate: false,
     autoRotateSpeed: -0.5,
     rotateSpeed: 0.5,
     zoomSpeed: 0.8,
-    minDistance: 20,
-    maxDistance: 600,
-    minPolarAngle: Math.PI / 5,
-    maxPolarAngle: Math.PI / 2,
+    minDistance: 0,
+    maxDistance: Infinity,
+    minPolarAngle: 0,
+    maxPolarAngle: Math.PI,
     minAzimuthAngle: -Infinity,
     maxAzimuthAngle: Infinity,
     enableDamping: true,
     dampingFactor: 0.5,
     enableZoom: true,
     target: {
-      x: 5,
-      y: 10,
-      z: 15
+      x: 0,
+      y: -20,
+      z: -30
     }
   },
   ambientLight: {
@@ -134,7 +136,7 @@ var config = {
     y: 0,
     z: 0
   },
-  timeStep: 0.016,
+  timeStep: 0.016, //0.016,
   integrators: {
       sympletic: 0,
       forward: 1,

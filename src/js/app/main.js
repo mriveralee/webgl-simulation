@@ -164,7 +164,15 @@ export default class Main {
 
     // Call render function and pass in created scene and camera
     if (Config.animate) {
-      this.particleSystem.integrate(Config.timeStep);
+      // Take the correct number of steps to appear as if
+      // we are running in real time
+      let numSteps = (1.0 / 30.0) / Config.timeStep;
+      if (numSteps < 1) {
+        numSteps = 1;
+      }
+      for (let i = 0; i < numSteps; i++) {
+        this.particleSystem.integrate(Config.timeStep);
+      }
     }
     this.renderer.render(this.scene, this.camera.threeCamera);
 

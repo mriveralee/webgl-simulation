@@ -16,12 +16,19 @@ export default class ParticleSystem extends Geometry {
     this.gridDim = Math.max(1, gridDim);
     this.numParticles = this.gridDim * this.gridDim;
     this.masses = [];
+    this.inverseMasses = [];
     this.forces = [];
-    this.velocities = []
+    this.accelerations = [];
+    this.velocities = [];
+    this.fixedPointIndices = [];
     // Positions are handled in our geometry
+    let mass = 0.1;
     for (let i = 0; i < this.numParticles; i++) {
-      this.masses.push(1);
+
+      this.masses.push(mass);
+      this.inverseMasses.push(1.0 / mass);
       this.forces.push(new THREE.Vector3());
+      this.accelerations.push(new THREE.Vector3());
       this.velocities.push(new THREE.Vector3());
     }
     this.constraints = [];
@@ -31,27 +38,29 @@ export default class ParticleSystem extends Geometry {
     let gravity = new THREE.Vector3(...Config.getGravityComponents());
     for (let i = 0; i < this.numParticles; i++) {
       // Clear forces
-      if (!this.forces[i].isVector3) {
-        console.log("nana");
-        this.forces[i] = new THREE.Vector3();
-      }
       this.forces[i].multiplyScalar(0);
-      // Gravity?
+      // Gravity
       if (Config.useGravity) {
         this.forces[i].addScaledVector(gravity, this.masses[i]);
       }
     }
-    // TODO enable constraints solving
+    // Resolve any spring constraints
     this.resolveConstraints();
+    // Apply some damping to velocity due to air resistant etc.
+    if (Config.useDamping) {
+      for (let i = 0; i < this.numParticles; i++) {
+        this.velocities[i].multiplyScalar(Config.dampingConstant);
+      }
+    }
   }
 
   computeAccelerations() {
-    var accelerations = [];
     for (let i = 0; i < this.numParticles ; i++) {
-      accelerations.push(new THREE.Vector3());
-      accelerations[i].addScaledVector(this.forces[i], 1/ this.masses[i]);
+      this.accelerations[i].multiplyScalar(0);
+      this.accelerations[i].addScaledVector(
+        this.forces[i], this.inverseMasses[i]);
     }
-    return accelerations;
+    return this.accelerations;
   }
 
 
@@ -59,15 +68,19 @@ export default class ParticleSystem extends Geometry {
   // https://en.wikipedia.org/wiki/Semi-implicit_Euler_method
   integrate(timeStep) {
     this.computeForces();
-    let accelerations = this.computeAccelerations();
+    this.computeAccelerations();
     for (let i = 0; i < this.numParticles; i++) {
-      this.velocities[i].addScaledVector(accelerations[i], timeStep);
+      //let oldVel = this.velocities[i].clone();
+      this.velocities[i].addScaledVector(this.accelerations[i], timeStep);
       this.geo.vertices[i].addScaledVector(this.velocities[i], timeStep);
       //this.positions[i].addScaledVector(this.velocities[i], timeStep);
-      this.geo.verticesNeedUpdate = true;
-      this.geo.normalsNeedUpdate = true;
-      this.geo.colorsNeedUpdate = true;
+
     }
+    this.geo.verticesNeedUpdate = true;
+    this.geo.normalsNeedUpdate = true;
+    this.geo.colorsNeedUpdate = true;
+    // Make the simulation move like honey
+    //this.velocities[i].multiplyScalar(0);
   }
 
   resolveConstraints() {
@@ -93,7 +106,7 @@ export default class ParticleSystem extends Geometry {
     for (let i = 0; i < dim; i++) {
       for (let j = 0; j < dim; j++) {
         positions.push(new THREE.Vector3(
-          j * 1.6,
+          j * 1.2,
           i * 1.2,
           30));
       }
@@ -143,13 +156,13 @@ export default class ParticleSystem extends Geometry {
   }
 
   createSprings() {
-    this._createStructuralSprings(1700);
-    this._createBendSprings(900);
-    this._createShearSprings(800);
-    this._createFixedPositionSprings(1200);
+    this._createStructuralSprings(190);
+    this._createBendSprings(60);
+    this._createShearSprings(15);
+    this._createFixedPositionSprings(150);
   }
 
-  _createStructuralSprings(stiffness = 100) {
+  _createStructuralSprings(stiffness = 1000) {
     const points = this.geo.vertices;
     const dim = this.gridDim;
     for (let i = 0; i < points.length; i++) {
@@ -175,8 +188,6 @@ export default class ParticleSystem extends Geometry {
   _createBendSprings(stiffness = 100) {
     const points = this.geo.vertices;
     const dim = this.gridDim;
-    let maxColumn = points.length - dim;
-    let minColumn = dim;
     for (let i = 0; i < points.length; i += 1) {
       let springLength = 0;
       // BEND SPRINGS
@@ -209,8 +220,6 @@ export default class ParticleSystem extends Geometry {
     // before column
     const points = this.geo.vertices;
     const dim = this.gridDim;
-    let maxColumn = points.length - dim;
-    let minColumn = dim;
     for (let i = 0; i < points.length; i += 2) {
       let springLength = 0;
       if (i - (1 + dim) >= 0) {
@@ -231,9 +240,7 @@ export default class ParticleSystem extends Geometry {
     const points = this.geo.vertices;
     const dim = this.gridDim;
     for (let i = points.length - dim; i < points.length; i++) {
-      if (i % dim == 0) {
-        this.constraints.push(new ZeroLengthSpring(i, points[i], stiffness));
-      }
+      this.constraints.push(new ZeroLengthSpring(i, points[i], stiffness));
     }
   }
 
