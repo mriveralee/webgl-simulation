@@ -9,7 +9,7 @@ import ZeroLengthSpring from './../physics/zeroLengthSpring';
 // A base class for the particleSystem that will hold a group of particles
 
 export default class ParticleSystem extends Geometry {
-  constructor(scene, gridDim = 20) {
+  constructor(scene, gridDim = 15) {
     super(scene);
     this.scene = scene;
     this.geo = null;
@@ -93,9 +93,9 @@ export default class ParticleSystem extends Geometry {
     for (let i = 0; i < dim; i++) {
       for (let j = 0; j < dim; j++) {
         positions.push(new THREE.Vector3(
-          1 + j * 8,
-          1 + i * 3,
-          2));
+          j * 4,
+          i * 3,
+          30));
       }
     }
     let orderIndices = [];
@@ -139,7 +139,7 @@ export default class ParticleSystem extends Geometry {
       }
     }
     this.makeParticles(positions, orderIndices);
-    this.place([0, -20, 0], [0, 0, 0], true, true);
+    this.place([-25, -30, 0], [0, 0, 0], true, true);
     // Make the springs!
     this.createSprings();
     this.createZeroLengthSprings();

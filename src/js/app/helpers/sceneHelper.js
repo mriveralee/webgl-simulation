@@ -42,6 +42,7 @@ export default class SceneHelper {
           0x0000FF,
           true)); // -Z
       scene.add(axes);
+      return axes;
   }
 
   static buildAxis(src, dst, colorHex, dashed) {
