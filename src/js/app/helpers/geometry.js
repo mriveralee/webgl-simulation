@@ -45,7 +45,7 @@ export default class Geometry {
     // this.mH = new MeshHelper(this.scene, mesh, this.geo);
     // Transparency
     mesh.material.transparent = true;
-    mesh.material.opacity = 0.5;
+    mesh.material.opacity = 0.8;
 
     // Optional Points
     if (showPoints) {
@@ -60,7 +60,7 @@ export default class Geometry {
 
     // Optional Wireframe
     if (showWireframe) {
-      mesh.material.wireframe = showWireframe;
+      //mesh.material.wireframe = showWireframe;
       // TODO the code below draws a weird wireframe o_o
       //const wireframe = new THREE.EdgesGeometry(this.geo);
       //const wireframeLines = new THREE.LineSegments(this.geo);

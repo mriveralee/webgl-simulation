@@ -142,38 +142,100 @@ export default class ParticleSystem extends Geometry {
     this.place([-25, -30, 0], [0, 0, 0], true, true);
     // Make the springs!
     this.createSprings();
-    this.createZeroLengthSprings();
   }
 
   createSprings() {
+    this._createStructuralSprings(1000);
+    this._createBendSprings(2000);
+    this._createShearSprings(100);
+    this._createFixedPositionSprings(2000);
+  }
+
+  _createStructuralSprings(stiffness = 100) {
+    const points = this.geo.vertices;
+    const dim = this.gridDim;
+    for (let i = 0; i < points.length; i++) {
+      let springLength = 0;
+      // NEIGHBORING STRUCTURAL SPRINGS
+      // *(i-1) --- *(i)
+      //            |
+      //            * (i-dim)
+      // TODO pass a stiffness constant
+      if (i - dim >= 0) {
+        // before row
+        springLength = (points[i].clone().sub(points[i - dim])).length();
+        this.constraints.push(new Spring(i, i - dim, springLength, stiffness));
+      }
+      // before column
+      if (i - 1 >= 0) {
+        springLength = points[i].clone().sub(points[i - 1]).length();
+        this.constraints.push(new Spring(i, i - 1, springLength, stiffness));
+      }
+    }
+  }
+
+  _createBendSprings(stiffness = 100) {
     const points = this.geo.vertices;
     const dim = this.gridDim;
     let maxColumn = points.length - dim;
     let minColumn = dim;
-    for (let i = 0; i < points.length; i++) {
-      let placeInDim = Math.floor(i / dim);
+    for (let i = 0; i < points.length; i += 1) {
       let springLength = 0;
-      // TODO pass a stiffness constant :/
-      if (placeInDim >= 1) {
-        // before column
-        springLength = (points[i].clone().sub(points[i - dim])).length();
-        this.constraints.push(new Spring(i, i - dim, springLength));
+      // BEND SPRINGS
+      // * (i-2) -...- *(i)----
+      //               .|.
+      //                * (i-2*dim)
+      // before column
+      if (i - 2 * dim >= 0) {
+        // before row
+        springLength = (points[i].clone().sub(points[i - 2 * dim])).length();
+        this.constraints.push(
+          new Spring(i, i - 2 * dim, springLength, stiffness));
       }
-
-      if (placeInDim + 1 < dim) {
-        springLength = points[i].clone().sub(points[i + 1]).length();
-        this.constraints.push(new Spring(i, i + 1));
+      // before column
+      if (i - 2 >= 0) {
+        springLength = points[i].clone().sub(points[i - 2]).length();
+        this.constraints.push(
+          new Spring(i, i - 2, springLength, stiffness));
       }
-
-
     }
   }
 
-  createZeroLengthSprings() {
+  _createShearSprings(stiffness = 100) {
+    // SHEAR SPRINGS
+    //      * (i + dim - 1)
+    //      | \
+    //(i-1) * - * (i)
+    //      | /
+    //      * (i - dim - 1)
+    // before column
+    const points = this.geo.vertices;
+    const dim = this.gridDim;
+    let maxColumn = points.length - dim;
+    let minColumn = dim;
+    for (let i = 0; i < points.length; i += 2) {
+      let springLength = 0;
+      if (i - (1 + dim) >= 0) {
+        springLength = points[i].clone().sub(points[i - (1 + dim)]).length();
+        this.constraints.push(
+          new Spring(i, i - (1 + dim), springLength, stiffness));
+      }
+      if (i + dim - 1 < points.length) {
+        springLength = points[i].clone().sub(points[i + dim - 1]).length();
+        this.constraints.push(
+          new Spring(i, i + dim - 1, springLength, stiffness));
+      }
+    }
+  }
+
+  _createFixedPositionSprings(stiffness = 1000) {
+    // Fixed point springs for pinning
     const points = this.geo.vertices;
     const dim = this.gridDim;
     for (let i = points.length - dim; i < points.length; i++) {
-      this.constraints.push(new ZeroLengthSpring(i, points[i]));
+      if (i % 5 == 0) {
+        this.constraints.push(new ZeroLengthSpring(i, points[i], stiffness));
+      }
     }
   }
 
