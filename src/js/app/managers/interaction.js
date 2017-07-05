@@ -36,7 +36,7 @@ export default class Interaction {
 
       if (this.keyboard.eventMatches(event, 'space')) {
         console.log('Space pressed');
-        Config.animate = !Config.animate;
+        Config.simulation.animate = !Config.simulation.animate;
       }
 
       if (this.keyboard.eventMatches(event, 'r')) {

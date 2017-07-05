@@ -17,23 +17,26 @@ var config = {
   isRotating: true,
   isMouseMoving: false,
   isMouseOver: false,
-  useVelocityDamping: true,
-  velocityDampingConstant: 0.0035,
-  useGravity: true,
-  gravity: () => {
-    return getGravity();
+  simulation: {
+    animate: false,
+    timeStep: 0.016, //0.016,
+    useVelocityDamping: true,
+    velocityDampingConstant: 0.003,
+    useGravity: true,
+    gravity: () => {
+      return getGravity();
+    },
+    getGravityComponents: () => {
+      var up = getUpComponents();
+      for (let i = 0; i < up.length; i++) {
+        up[i] *= getGravity();
+      }
+      return up;
+    },
   },
   getUpComponents: () => {
     return getUpComponents();
   },
-  getGravityComponents: () => {
-    var up = getUpComponents();
-    for (let i = 0; i < up.length; i++) {
-      up[i] *= getGravity();
-    }
-    return up;
-  },
-  animate: false,
   showStats: () => {
     return false && config.isDev;
   },
@@ -55,6 +58,8 @@ var config = {
     enableHelper: false,
     wireframe: false,
     translucent: false,
+    showPoints: false,
+    opacity: 1.0,
     material: {
       color: 0xffffff,
       emissive: 0xffffff
@@ -75,7 +80,7 @@ var config = {
   },
   controls: {
     autoRotate: false,
-    autoRotateSpeed: -0.5,
+    autoRotateSpeed: -5,
     rotateSpeed: 0.5,
     zoomSpeed: 0.8,
     minDistance: 0,
@@ -136,12 +141,6 @@ var config = {
     y: 0,
     z: 0
   },
-  timeStep: 0.016, //0.016,
-  integrators: {
-      sympletic: 0,
-      forward: 1,
-      backward: 2,
-  }
 };
 
 export default config;

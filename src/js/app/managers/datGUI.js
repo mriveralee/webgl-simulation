@@ -2,7 +2,7 @@ import Config from '../../data/config';
 
 // Manages all dat.GUI interactions
 export default class DatGUI {
-  constructor(main, mesh) {
+  constructor(main, getGeometry) {
     const gui = new dat.GUI();
 
     this.camera = main.camera.threeCamera;
@@ -56,7 +56,7 @@ export default class DatGUI {
     controlsFolder.add(Config.controls, 'autoRotate').name('Auto Rotate').onChange((value) => {
       this.controls.autoRotate = value;
     });
-    const controlsAutoRotateSpeedGui = controlsFolder.add(Config.controls, 'autoRotateSpeed', -1, 1).name('Rotation Speed');
+    const controlsAutoRotateSpeedGui = controlsFolder.add(Config.controls, 'autoRotateSpeed', -5, 5).name('Rotation Speed');
     controlsAutoRotateSpeedGui.onChange((value) => {
       this.controls.enableRotate = false;
       this.controls.autoRotateSpeed = value;
@@ -69,6 +69,7 @@ export default class DatGUI {
     /* Mesh */
     const meshFolder = gui.addFolder('Mesh');
     meshFolder.add(Config.mesh, 'translucent', true).name('Translucent').onChange((value) => {
+      var mesh = getGeometry().mesh;
       if(value) {
         mesh.material.transparent = true;
         mesh.material.opacity = 0.5;
@@ -77,8 +78,23 @@ export default class DatGUI {
       }
     });
     meshFolder.add(Config.mesh, 'wireframe', true).name('Wireframe').onChange((value) => {
+      var mesh = getGeometry().mesh;
       mesh.material.wireframe = value;
     });
+
+    meshFolder.add(Config.mesh, 'showPoints', true).name('Show Points').onChange((value) => {
+      var geo = getGeometry();
+      geo.showPoints(value);
+    });
+
+
+    const simulationFolder = gui.addFolder('Simulation');
+    simulationFolder.add(Config.simulation, 'animate', true).name('Animate').listen();
+    simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity');
+    simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity');
+    simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping');
+    simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.035).name('Time Step');
+
 
 
     /* Lights */

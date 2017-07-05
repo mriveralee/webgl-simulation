@@ -11,6 +11,8 @@ export default class Geometry {
   constructor(scene) {
     this.scene = scene;
     this.geo = null;
+    this.mesh = null;
+    this.pointsMesh = null;
   }
 
   make(type) {
@@ -27,10 +29,11 @@ export default class Geometry {
     }
   }
 
-  place(position, rotation, showWireframe=false, showPoints=false) {
+  place(position, rotation, showPoints=false) {
     //const material = new Material(0xeeeeee).standard;
     const material = new Material(0xffffff).standard;
     const mesh = new THREE.Mesh(this.geo, material);
+    this.mesh = mesh;
 
     // Use ES6 spread to set position and rotation from passed in array
     mesh.position.set(...position);
@@ -42,32 +45,19 @@ export default class Geometry {
 
     // Add main mesh to the scene!
     this.scene.add(mesh);
-    // this.mH = new MeshHelper(this.scene, mesh, this.geo);
-    // Transparency
-    mesh.material.transparent = true;
-    mesh.material.opacity = 0.8;
+  }
 
-    // Optional Points
-    if (showPoints) {
-      const pointMaterial = new THREE.PointsMaterial({
-        color: 0x800080
-      });
-      const pointCloudMesh = new THREE.Points(this.geo, pointMaterial);
-      pointCloudMesh.position.set(...position);
-      pointCloudMesh.rotation.set(...rotation);
-      //this.scene.add(pointCloudMesh);
+  showPoints(value) {
+    if (!value) {
+      this.scene.remove(this.pointsMesh);
+      return;
     }
-
-    // Optional Wireframe
-    if (showWireframe) {
-      //mesh.material.wireframe = showWireframe;
-      // TODO the code below draws a weird wireframe o_o
-      //const wireframe = new THREE.EdgesGeometry(this.geo);
-      //const wireframeLines = new THREE.LineSegments(this.geo);
-      //wireframeLines.position.set(...position);
-      //wireframeLines.rotation.set(...rotation);
-      //this.scene.add(wireframeLines);
-    }
-
+    const pointMaterial = new THREE.PointsMaterial({
+      color: 0x800080
+    });
+    this.pointsMesh = new THREE.Points(this.geo, pointMaterial);
+    this.pointsMesh.position.set(...this.mesh.position.toArray());
+    this.pointsMesh.rotation.set(...this.mesh.rotation.toArray());
+    this.scene.add(this.pointsMesh);
   }
 }

@@ -35,12 +35,12 @@ export default class ParticleSystem extends Geometry {
   }
 
   computeForces() {
-    let gravity = new THREE.Vector3(...Config.getGravityComponents());
+    let gravity = new THREE.Vector3(...Config.simulation.getGravityComponents());
     for (let i = 0; i < this.numParticles; i++) {
       // Clear forces
       this.forces[i].multiplyScalar(0);
       // Gravity
-      if (Config.useGravity) {
+      if (Config.simulation.useGravity) {
         this.forces[i].addScaledVector(gravity, this.masses[i]);
       }
     }
@@ -66,7 +66,7 @@ export default class ParticleSystem extends Geometry {
 
     // Apply some damping to velocity for air resistance etc.
     let dampingFactor =
-      Config.useVelocityDamping ? Config.velocityDampingConstant : 0;
+      Config.simulation.useVelocityDamping ? Config.simulation.velocityDampingConstant : 0;
 
     for (let i = 0; i < this.numParticles; i++) {
       this.velocities[i].addScaledVector(this.accelerations[i], timeStep);

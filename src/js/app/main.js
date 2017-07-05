@@ -104,7 +104,7 @@ export default class Main {
       // All loaders done now
       this.manager.onLoad = () => {
         // Set up interaction manager with the app now that the model is finished loading
-        var that = this;
+        const that = this;
         var resetCallback = () => {
             that.onReset();
         }
@@ -116,7 +116,10 @@ export default class Main {
           resetCallback);
 
         // Add dat.GUI controls if dev
-        let controls = new DatGUI(this, this.model.obj);
+        var geoCallback = () => {
+          return that.particleSystem;
+        };
+        let controls = new DatGUI(this, geoCallback);
 
         // Everything is now fully loaded
         Config.isLoaded = true;
@@ -149,15 +152,16 @@ export default class Main {
     }
 
     // Call render function and pass in created scene and camera
-    if (Config.animate) {
+    if (Config.simulation.animate) {
       // Take the correct number of steps to appear as if
       // we are running in real time
-      let numSteps = (1.0 / 30.0) / Config.timeStep;
+      let timeStep = Config.simulation.timeStep;
+      let numSteps = (1.0 / 30.0) / timeStep;
       if (numSteps < 1) {
         numSteps = 1;
       }
       for (let i = 0; i < numSteps; i++) {
-        this.particleSystem.integrate(Config.timeStep);
+        this.particleSystem.integrate(timeStep);
       }
     }
     this.renderer.render(this.scene, this.camera.threeCamera);
@@ -203,5 +207,13 @@ export default class Main {
     this.particleSystem.makeParticlesTest();
     // Draw axes in scene
     SceneHelper.createPrincipalAxes(this.scene);
+    this._restoreConfig();
+  }
+
+  _restoreConfig() {
+    const material = this.particleSystem.mesh.material;
+    material.wireframe = Config.mesh.wireframe;
+    material.transparent = Config.mesh.translucent;
+    material.opacity = Config.mesh.opacity;
   }
 }
