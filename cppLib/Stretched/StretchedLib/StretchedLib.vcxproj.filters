@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="design">
+      <UniqueIdentifier>{b3a5a3ed-e8ab-4aa2-ac7e-859a04309c88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extrusion">
+      <UniqueIdentifier>{c66268a4-8b53-492d-a2bf-226dfaf36558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="surfaces">
+      <UniqueIdentifier>{be876b84-af32-4ecb-bb7a-11bece0f72c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sim">
+      <UniqueIdentifier>{10a541f1-d8e2-4b79-842c-2d39190bd650}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{dd358d2e-c1b3-4b75-8c54-2ac47d496cd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="triangulation">
+      <UniqueIdentifier>{60795062-a40e-447e-bcc3-7441a2763f2c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="StretchedSimWindow.cpp">
+      <Filter>sim</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedExtrusionMaker.cpp">
+      <Filter>extrusion</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedExtrusion.cpp">
+      <Filter>extrusion</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedExtrusionBezierCurve.cpp">
+      <Filter>extrusion</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedDesignWindow.cpp">
+      <Filter>design</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedFlatSurface.cpp">
+      <Filter>surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedColor.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedKeyPressUtil.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="DelaunayTriangulation.cpp">
+      <Filter>triangulation</Filter>
+    </ClCompile>
+    <ClCompile Include="DelaunayTriangulator.cpp">
+      <Filter>triangulation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\triangle\triangle.c">
+      <Filter>triangulation</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedTriangle.cpp">
+      <Filter>triangulation</Filter>
+    </ClCompile>
+    <ClCompile Include="StretchedExtrusionCircle.cpp">
+      <Filter>extrusion</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StretchedDesignWindow.h">
+      <Filter>design</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedExtrusionMaker.h">
+      <Filter>extrusion</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedExtrusion.h">
+      <Filter>extrusion</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedExtrusionBezierCurve.h">
+      <Filter>extrusion</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedFlatSurface.h">
+      <Filter>surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedSimWindow.h">
+      <Filter>sim</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedColor.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedKeyPressUtil.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="DelaunayTriangulation.h">
+      <Filter>triangulation</Filter>
+    </ClInclude>
+    <ClInclude Include="DelaunayTriangulator.h">
+      <Filter>triangulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\triangle\triangle.h">
+      <Filter>triangulation</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedTriangle.h">
+      <Filter>triangulation</Filter>
+    </ClInclude>
+    <ClInclude Include="StretchedConstants.h" />
+    <ClInclude Include="StretchedExtrusionCircle.h">
+      <Filter>extrusion</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

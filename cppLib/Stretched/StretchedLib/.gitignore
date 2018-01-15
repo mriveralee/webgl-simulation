@@ -1,0 +1,5 @@
+Debug/
+release/
+*.sdf
+.vs/
+vcxproj.user
