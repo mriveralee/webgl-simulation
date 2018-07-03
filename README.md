@@ -1,4 +1,9 @@
-# Three.js Webpack ES6 Boilerplate
+# webgl-simulation
+A quick app that runs a cloth simulation in webgl
+===
+
+
+## Three.js Webpack ES6 Boilerplate
 A basic boilerplate for a Three.js project including the use of Webpack and ES6 syntax via Babel.
 
 ## Project Structure
