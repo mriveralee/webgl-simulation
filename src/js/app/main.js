@@ -25,7 +25,7 @@ import DatGUI from './managers/datGUI';
 import Config from './../data/config';
 
 // Stretched
-import ParticleSystem from './stretched/particleSystem';
+import ParticleSystem from './stretched/hydrogelParticleSystem';
 // -- End of imports
 
 // Local vars for rStats
@@ -203,8 +203,9 @@ export default class Main {
       this.light.place(lights[i]);
     }
     // TODO: add things to the scene
-    this.particleSystem = new ParticleSystem(this.scene, 30);
-    this.particleSystem.makeParticlesTest();
+    this.particleSystem = new ParticleSystem(this.scene, Config.simulation.gridDim.X);
+
+    this.particleSystem.makeParticlesTest(Config.simulation.shape);
     // Draw axes in scene
     SceneHelper.createPrincipalAxes(this.scene);
     this._restoreConfig();

@@ -18,11 +18,18 @@ var config = {
   isMouseMoving: false,
   isMouseOver: false,
   simulation: {
+    gridDim: {
+        X: 20,
+        Y: 20,
+    },
+    fabricParticleMass: 1.0/1000,
+    shape: 'SQUARE',
+
     animate: false,
     timeStep: 0.016, //0.016,
     useVelocityDamping: true,
     velocityDampingConstant: 0.003,
-    useGravity: true,
+    useGravity: false,
     gravity: () => {
       return getGravity();
     },
