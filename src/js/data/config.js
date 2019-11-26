@@ -22,7 +22,7 @@ var config = {
         X: 20,
         Y: 20,
     },
-    fabricParticleMass: 1.0/1000,
+    fabricParticleMass: 10/1000,
     shape: 'SQUARE',
 
     animate: false,
@@ -78,7 +78,7 @@ var config = {
     near: 0.0008
   },
   camera: {
-    fov: 30,
+    fov: 75,
     near: 10,
     far: 1000,
     aspect: 1, // updated using window.devicePixelRatio
@@ -101,9 +101,9 @@ var config = {
     dampingFactor: 0.5,
     enableZoom: true,
     target: {
-      x: 0,
-      y: -20,
-      z: -30
+      x: 20,
+      y: 20,
+      z: 30
     }
   },
   ambientLight: {

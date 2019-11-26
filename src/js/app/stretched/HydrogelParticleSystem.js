@@ -177,21 +177,23 @@ export default class ParticleSystem extends Geometry {
     }
 
     createSprings() {
-        this._createStructuralSprings(1, 1);
-        this._createBendSprings(1,1);
-        this._createShearSprings(1);
-        this._createHydrogelSprings(1, 0.95);
-        this.geo.vertices[30] = this.geo.vertices[30].add(new THREE.Vector3(0,0, 4));
+        this._createStructuralSprings(0.2, 0.3);
+         this._createBendSprings(0.2, 0.2);
+        this._createShearSprings(0.4);
+        this._createHydrogelSprings(6, 0.3);
+        const halfGridDim = this.gridDim / 2;
+        const seedPtIndex = halfGridDim + halfGridDim * halfGridDim;
+        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, 1.0));
         //his._createFixedPositionSprings(150);
     }
 
-    _createHydrogelSprings(stiffness, initialExtensionRatio=1.001) {
+    _createHydrogelSprings(stiffness, initialExtensionRatio=1.00) {
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 1; i < points.length; i += 2) {
+        for (let i = 1; i < points.length; i += 3) {
             let springLength = 0;
             if (i - dim >= 0) {
-                // before rowds
+                // before rows
                 springLength = initialExtensionRatio * ((points[i].clone().sub(points[i - dim])).length());
                 this.constraints.push(new Spring(i, i - dim, springLength, stiffness));
             }
