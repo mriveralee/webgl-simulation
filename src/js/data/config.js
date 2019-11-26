@@ -19,7 +19,7 @@ var config = {
   isMouseOver: false,
   simulation: {
     gridDim: {
-        X: 20,
+        X: 60,
         Y: 20,
     },
     fabricParticleMass: 10/1000,

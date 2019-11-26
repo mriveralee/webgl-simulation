@@ -177,20 +177,21 @@ export default class ParticleSystem extends Geometry {
     }
 
     createSprings() {
-        this._createStructuralSprings(0.2, 0.3);
-         this._createBendSprings(0.2, 0.2);
-        this._createShearSprings(0.4);
-        this._createHydrogelSprings(6, 0.3);
+        this._createStructuralSprings(0.1, 0.5);
+        this._createBendSprings(2, 2, 2, 5);
+        this._createShearSprings(0.2);
+        this._createHydrogelSprings(4, 0.3, Math.min(this.gridDim/8,2));
         const halfGridDim = this.gridDim / 2;
         const seedPtIndex = halfGridDim + halfGridDim * halfGridDim;
-        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, 1.0));
+        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, 4.0));
         //his._createFixedPositionSprings(150);
     }
 
-    _createHydrogelSprings(stiffness, initialExtensionRatio=1.00) {
+
+    _createHydrogelSprings(stiffness, initialExtensionRatio=1.00, spacing=1) {
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 1; i < points.length; i += 3) {
+        for (let i = 0; i < points.length; i += spacing) {
             let springLength = 0;
             if (i - dim >= 0) {
                 // before rows
@@ -198,6 +199,11 @@ export default class ParticleSystem extends Geometry {
                 this.constraints.push(new Spring(i, i - dim, springLength, stiffness));
             }
             // Same as structural but only along one dim
+            // before column
+            if (i - 1 >= 0) {
+                springLength = initialExtensionRatio * ((points[i].clone().sub(points[i -  1])).length());
+                this.constraints.push(new Spring(i, i - 1, springLength, stiffness));
+            }
         }
     }
 
@@ -224,7 +230,7 @@ export default class ParticleSystem extends Geometry {
         }
     }
 
-    _createBendSprings(stiffnessX, stiffnessY) {
+    _createBendSprings(stiffnessX, stiffnessY, startBendDistance=2, endBendDistance=5) {
         const points = this.geo.vertices;
         const dim = this.gridDim;
         for (let i = 0; i < points.length; i += 1) {
@@ -232,19 +238,22 @@ export default class ParticleSystem extends Geometry {
             // BEND SPRINGS
             // * (i-2) -...- *(i)----
             //               .|.
+
             //                * (i-2*dim)
             // before column
-            if (i - 2 * dim >= 0) {
-                // before row
-                springLength = (points[i].clone().sub(points[i - 2 * dim])).length();
-                this.constraints.push(
-                    new Spring(i, i - 2 * dim, springLength, stiffnessY));
-            }
-            // before column
-            if (i - 2 >= 0) {
-                springLength = points[i].clone().sub(points[i - 2]).length();
-                this.constraints.push(
-                    new Spring(i, i - 2, springLength, stiffnessX));
+            for (let j = startBendDistance; j < endBendDistance; j++) {
+                if (i - j * dim >= 0) {
+                    // before row
+                    springLength = (points[i].clone().sub(points[i - j * dim])).length();
+                    this.constraints.push(
+                        new Spring(i, i - j * dim, springLength, stiffnessY));
+                }
+                // before column
+                if (i - j >= 0) {
+                    springLength = points[i].clone().sub(points[i - j]).length();
+                    this.constraints.push(
+                        new Spring(i, i - j, springLength, stiffnessX));
+                    }
                 }
             }
         }
