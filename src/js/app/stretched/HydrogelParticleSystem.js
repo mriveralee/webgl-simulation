@@ -52,9 +52,7 @@ export default class ParticleSystem extends Geometry {
 
     computeAccelerations() {
         for (let i = 0; i < this.numParticles ; i++) {
-            //if (!Config.simulation.useVerletIntegration) {
-                this.accelerations[i].multiplyScalar(0);
-            //}
+            this.accelerations[i].multiplyScalar(0);
             this.accelerations[i].addScaledVector(
                 this.forces[i], this.inverseMasses[i]);
         }
@@ -183,6 +181,7 @@ export default class ParticleSystem extends Geometry {
         this._createBendSprings(1,1);
         this._createShearSprings(1);
         this._createHydrogelSprings(1, 0.95);
+        this.geo.vertices[30] = this.geo.vertices[30].add(new THREE.Vector3(0,0, 4));
         //his._createFixedPositionSprings(150);
     }
 
