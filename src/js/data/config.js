@@ -27,6 +27,7 @@ var config = {
 
     animate: false,
     timeStep: 0.016, //0.016,
+    useVerletIntegration: true,
     useVelocityDamping: true,
     velocityDampingConstant: 0.003,
     useGravity: false,
