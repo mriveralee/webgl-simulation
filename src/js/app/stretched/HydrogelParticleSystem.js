@@ -183,7 +183,7 @@ export default class ParticleSystem extends Geometry {
         this._createHydrogelSprings(4, 0.3, Math.min(this.gridDim/8,2));
         const halfGridDim = this.gridDim / 2;
         const seedPtIndex = halfGridDim + halfGridDim * halfGridDim;
-        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, 4.0));
+        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, -4.0));
         //his._createFixedPositionSprings(150);
     }
 
