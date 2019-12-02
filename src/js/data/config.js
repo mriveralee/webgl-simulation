@@ -22,9 +22,9 @@ var config = {
         X: 60,
         Y: 20,
     },
+    layerHeight: 10,
     fabricParticleMass: 10/1000,
     shape: 'SQUARE',
-
     animate: false,
     timeStep: 0.016, //0.016,
     useVerletIntegration: false,
@@ -66,7 +66,7 @@ var config = {
     enableHelper: false,
     wireframe: false,
     translucent: false,
-    showPoints: false,
+    showPoints: true,
     opacity: 1.0,
     material: {
       color: 0xffffff,

@@ -14,14 +14,18 @@ export default class ParticleSystem extends Geometry {
         this.scene = scene;
         this.geo = null;
         this.gridDim = Math.max(1, gridDim);
-        this.numParticles = this.gridDim * this.gridDim;
+        this.gridParticles = this.gridDim * this.gridDim;
+        this.hydrogelSpacing = Math.min(this.gridDim/8, 2);
+        this.hydrogelParticles = Math.floor(this.gridDim * this.gridDim / this.hydrogelSpacing);
+        this.numParticles = this.gridParticles + this.hydrogelParticles;
         this.masses = [];
         this.inverseMasses = [];
         this.forces = [];
         this.accelerations = [];
         this.velocities = [];
         this.fixedPointIndices = [];
-        this.oldPositions = []
+        this.oldPositions = [];
+        this.layerHeight = Config.simulation.layerHeight;
         // Positions are handled in our geometry
         let mass = Config.simulation.fabricParticleMass;
         for (let i = 0; i < this.numParticles; i++) {
@@ -170,8 +174,46 @@ export default class ParticleSystem extends Geometry {
 
             }
         }
+
+        // Now make hydrogel particles
+        const pointsLength = positions.length;
+        const spacing = this.hydrogelSpacing;
+        let j = 0;
+        for (let i = 0; i < pointsLength; i += spacing) {
+            if (i > 0 && i % this.gridDim == 0) {
+            //    i += this.gridDim * spacing;
+            }
+            let firstPosition = positions[i];
+            let secondPosition = firstPosition.clone();
+            secondPosition.z += this.layerHeight;
+            positions.push(secondPosition);
+            orderIndices.push(i);
+            orderIndices.push(pointsLength + j);
+            orderIndices.push(pointsLength + j);
+            j += 1;
+
+            // Draw lines across the gel points sampels  o-o
+            if ((pointsLength + j) % this.gridDim != 0) {
+                orderIndices.push(pointsLength + j - 1)
+                orderIndices.push(pointsLength + j)
+                orderIndices.push(pointsLength + j)
+            }
+
+            // if (i - dim >= 0) {
+            //     // before rows
+            //     springLength = initialExtensionRatio * ((points[i].clone().sub(points[i - dim])).length());
+            //     this.constraints.push(new Spring(i, i - dim, springLength, stiffness));
+            // }
+            // // Same as structural but only along one dim
+            // // before column
+            // if (i - 1 >= 0) {
+            //     springLength = initialExtensionRatio * ((points[i].clone().sub(points[i -  1])).length());
+            //     this.constraints.push(new Spring(i, i - 1, springLength, stiffness));
+            // }
+        }
+
         this.makeParticles(positions, orderIndices);
-        this.place([-25, -30, 0], [0, 0, 0], true, true);
+        this.place([-25, -30, 0], [0, 0, 0], true, Config.mesh.showPoints);
         // Make the springs!
         this.createSprings();
     }
@@ -180,37 +222,73 @@ export default class ParticleSystem extends Geometry {
         this._createStructuralSprings(0.1, 0.5);
         this._createBendSprings(2, 2, 2, 5);
         this._createShearSprings(0.2);
-        this._createHydrogelSprings(4, 0.3, Math.min(this.gridDim/8,2));
-        const halfGridDim = this.gridDim / 2;
-        const seedPtIndex = halfGridDim + halfGridDim * halfGridDim;
-        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, -4.0));
+        this._createHydrogelSprings(4, 0.3);
+        //const halfGridDim = this.gridDim / 2;
+        //const seedPtIndex = halfGridDim + halfGridDim * halfGridDim;
+        //this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, -4.0));
         //his._createFixedPositionSprings(150);
     }
 
 
-    _createHydrogelSprings(stiffness, initialExtensionRatio=1.00, spacing=1) {
+    _createHydrogelSprings(stiffness, initialExtensionRatio=1.00) {
         const points = this.geo.vertices;
+        const textileParticleCount = this.numParticles - this.hydrogelParticles;
         const dim = this.gridDim;
-        for (let i = 0; i < points.length; i += spacing) {
+        const spacing = this.hydrogelSpacing;
+        let j = 0;
+        for (let i = 0; i < textileParticleCount - spacing; i += spacing) {
             let springLength = 0;
-            if (i - dim >= 0) {
+            let textileParticleIndex = i;
+            let hydrogelParticleIndex = textileParticleCount + j - 1;
+            // Vertically, connected to fabric
                 // before rows
-                springLength = initialExtensionRatio * ((points[i].clone().sub(points[i - dim])).length());
-                this.constraints.push(new Spring(i, i - dim, springLength, stiffness));
+            let baseLength = (points[textileParticleIndex].clone().sub(points[hydrogelParticleIndex])).length();
+            springLength = initialExtensionRatio * baseLength;
+            this.constraints.push(
+                new Spring(
+                    textileParticleIndex,
+                    hydrogelParticleIndex,
+                    springLength,
+                    stiffness));
+            // Hydrogel to hydrogel?
+            if (i % this.gridDim != 0) {
+
+
             }
-            // Same as structural but only along one dim
-            // before column
-            if (i - 1 >= 0) {
-                springLength = initialExtensionRatio * ((points[i].clone().sub(points[i -  1])).length());
-                this.constraints.push(new Spring(i, i - 1, springLength, stiffness));
-            }
+            //
+            // let firstPosition = positions[i];
+            // let secondPosition = firstPosition.clone();
+            // secondPosition.z += layerHeight;
+            // positions.push(secondPosition);
+            // orderIndices.push(i);
+            // orderIndices.push(pointsLength + j);
+            // orderIndices.push(i);
+            j += 1;
         }
+
+
+
+        // for (let i = textileParticles; i < points.length; i += 1) {
+        //     let springLength = 0;
+        //     if (i - dim >= 0) {
+        //         // before rows
+        //         let
+        //         springLength = initialExtensionRatio * ((points[i].clone().sub(points[(i - textileParticles) * spac])).length());
+        //         this.constraints.push(new Spring(i, i - dim, springLength, stiffness));
+        //     }
+        //     // Same as structural but only along one dim
+        //     // before column
+        //     if (i - 1 >= 0) {
+        //         springLength = initialExtensionRatio * ((points[i].clone().sub(points[i -  1])).length());
+        //         this.constraints.push(new Spring(i, i - 1, springLength, stiffness));
+        //     }
+        // }
     }
 
     _createStructuralSprings(stiffnessX, stiffnessY) {
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 0; i < points.length; i++) {
+        for (let i = 0; i < this.gridParticles; i++) {
             let springLength = 0;
             // NEIGHBORING STRUCTURAL SPRINGS
             // *(i-1) --- *(i)
@@ -233,7 +311,7 @@ export default class ParticleSystem extends Geometry {
     _createBendSprings(stiffnessX, stiffnessY, startBendDistance=2, endBendDistance=5) {
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 0; i < points.length; i += 1) {
+        for (let i = 0; i < this.gridParticles; i += 1) {
             let springLength = 0;
             // BEND SPRINGS
             // * (i-2) -...- *(i)----
@@ -268,14 +346,14 @@ export default class ParticleSystem extends Geometry {
         // before column
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 0; i < points.length; i += 2) {
+        for (let i = 0; i < this.gridParticles; i += 2) {
             let springLength = 0;
             if (i - (1 + dim) >= 0) {
                 springLength = points[i].clone().sub(points[i - (1 + dim)]).length();
                 this.constraints.push(
                     new Spring(i, i - (1 + dim), springLength, stiffness));
             }
-            if (i + dim - 1 < points.length) {
+            if (i + dim - 1 < this.gridParticles) {
                 springLength = points[i].clone().sub(points[i + dim - 1]).length();
                 this.constraints.push(
                     new Spring(i, i + dim - 1, springLength, stiffness));
@@ -287,7 +365,7 @@ export default class ParticleSystem extends Geometry {
         // Fixed point springs for pinning
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = points.length - dim; i < points.length; i++) {
+        for (let i = this.gridParticles - dim; i < this.gridParticles; i++) {
             this.constraints.push(new ZeroLengthSpring(i, points[i], stiffness));
         }
     }

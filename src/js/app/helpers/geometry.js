@@ -45,6 +45,7 @@ export default class Geometry {
 
     // Add main mesh to the scene!
     this.scene.add(mesh);
+    this.showPoints(showPoints)
   }
 
   showPoints(value) {
