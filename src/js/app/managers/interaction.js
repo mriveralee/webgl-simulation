@@ -4,7 +4,7 @@ import Config from '../../data/config';
 
 // Manages all input interactions
 export default class Interaction {
-  constructor(renderer, scene, camera, controls, onReset) {
+  constructor(renderer, scene, camera, controls, onReset, getGeometry) {
     // Properties
     this.renderer = renderer;
     this.scene = scene;
@@ -43,6 +43,11 @@ export default class Interaction {
         if (this.onReset) {
           this.onReset();
         }
+      }
+      if (this.keyboard.eventMatches(event, 'p')) {
+          console.log("hello", Config.mesh.showPoints, !Config.mesh.showPoints)
+          let val = !Config.mesh.showPoints;
+          Config.mesh.showPoints = val;
       }
     });
   }

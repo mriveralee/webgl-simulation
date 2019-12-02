@@ -62,5 +62,11 @@ export default class SceneHelper {
     return axis;
   }
 
+  static createGrid(scene, size, divisions) {
+      let gridHelper = new THREE.GridHelper(size, divisions);
+      scene.add(gridHelper);
+      gridHelper.rotateX(Math.PI / 2);
+  }
+
 
 }

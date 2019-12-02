@@ -38,6 +38,8 @@ export default class Main {
     // Set container property to container element
     this.container = container;
 
+    // Set default up dir
+    THREE.Object3D.DefaultUp = new THREE.Vector3(...Config.getUpComponents());
     // Start Three clock
     this.clock = new THREE.Clock();
 
@@ -108,17 +110,20 @@ export default class Main {
         var resetCallback = () => {
             that.onReset();
         }
+
+        var geoCallback = () => {
+          return that.getParticleSystem();
+        };
+
         new Interaction(
           this.renderer.threeRenderer,
           this.scene,
           this.camera.threeCamera,
           this.controls.threeControls,
-          resetCallback);
+          resetCallback,
+          geoCallback);
 
-        // Add dat.GUI controls if dev
-        var geoCallback = () => {
-          return that.getParticleSystem();
-        };
+          // Add dat.GUI controls if dev
         let controls = new DatGUI(this, geoCallback);
 
         // Everything is now fully loaded
@@ -209,7 +214,13 @@ export default class Main {
 
     this.particleSystem.makeParticlesTest(Config.simulation.shape);
     // Draw axes in scene
-    SceneHelper.createPrincipalAxes(this.scene);
+    let axesLineLength = 10;
+    SceneHelper.createPrincipalAxes(this.scene, axesLineLength);
+    let gridSize = 10;
+    let gridDivisions = 10;
+    if (Config.showGrid) {
+        SceneHelper.createGrid(this.scene, gridSize, gridDivisions)
+    }
     this._restoreConfig();
   }
 
