@@ -15,7 +15,7 @@ export default class ParticleSystem extends Geometry {
         this.geo = null;
         this.gridDim = Math.max(1, gridDim);
         this.gridParticles = this.gridDim * this.gridDim;
-        this.hydrogelSpacing = Math.min(this.gridDim/8, 2);
+        this.hydrogelSpacing = 1; //Math.min(this.gridDim/8, 2);
         this.hydrogelParticles =  Math.floor(this.gridDim * (this.gridDim - this.hydrogelSpacing) / this.hydrogelSpacing);
         // Math.floor(this.gridDim * this.gridDim / this.hydrogelSpacing);
         this.numParticles = this.gridParticles + this.hydrogelParticles;
@@ -161,9 +161,9 @@ export default class ParticleSystem extends Geometry {
         const dim = this.gridDim;
         for (let i = 0; i < dim; i++) {
             for (let j = 0; j < dim; j++) {
-                positions.push(new THREE.Vector3(
-                    j * Config.simulation.gridDim.spacing,
+                positions.push(new THREE.Vector3( // swapped i and j here 
                     i * Config.simulation.gridDim.spacing,
+                    j * Config.simulation.gridDim.spacing,
                     30));
                 }
         }
@@ -238,9 +238,9 @@ export default class ParticleSystem extends Geometry {
     }
 
     createSprings() {
-        this._createStructuralSprings(0.02, 0.04);
-        this._createBendSprings(0.2, 0.2, 2, this.gridDim);
-        this._createShearSprings(0.02);
+        this._createStructuralSprings(0.2, 0.4);
+        this._createBendSprings(2, 2, 2, 5);
+        this._createShearSprings(0.2);
         this._createHydrogelSprings(Config.simulation.hydrogelSpringStrengthZ, Config.simulation.hydrogelSpringStrengthXY, Config.simulation.hydrogelShrinkRatioZ, Config.simulation.hydrogelShrinkRatioXY);
         //const halfGridDim = this.gridDim / 2;
         //const seedPtIndex = halfGridDim + halfGridDim * halfGridDim;

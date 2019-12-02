@@ -22,7 +22,7 @@ export default class Spring {
     let lengthDeltaPosA = deltaPosA.length();
     deltaPosA = deltaPosA.normalize();
     let forceA = deltaPosA.multiplyScalar(
-      -1 * this.stiffness * ((lengthDeltaPosA / this.restLength) -1));
+      -1 * this.stiffness * ((lengthDeltaPosA / this.restLength) - 1));
 
       // -1 * this.stiffness * (lengthDeltaPosA - this.restLength));
     let forceB = forceA.clone().multiplyScalar(-1);

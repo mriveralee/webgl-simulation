@@ -96,7 +96,15 @@ export default class DatGUI {
     simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.040).name('Time Step').listen();
     simulationFolder.add(Config.simulation, 'avoidSelfIntersections', false).name('Avoid Self Intersections').listen();
     simulationFolder.add(Config.simulation, 'fabricSelfIntersectionsMinDist', 0.01, 2).name('Self Intersections Test Dist').listen();
-    simulationFolder.add(Config.simulation, 'layerHeight', 0.1, 15).name('Hydrogel Layer Height').listen();
+
+    const hydrogelParametersFolder = gui.addFolder('Hydrogel');
+    hydrogelParametersFolder.add(Config.simulation, 'layerHeight', 0.1, 15).name('Hydrogel Layer Height').listen();
+    hydrogelParametersFolder.add(Config.simulation, 'hydrogelSpringStrengthZ', 0, 30).name('Stiffness Z').listen();
+    hydrogelParametersFolder.add(Config.simulation, 'hydrogelSpringStrengthXY', 0, 30).name('Stiffness XY').listen();
+    hydrogelParametersFolder.add(Config.simulation, 'hydrogelShrinkRatioZ', 0, 10).name('Shrink Ratio Z').listen();
+    hydrogelParametersFolder.add(Config.simulation, 'hydrogelShrinkRatioXY', 0, 10).name('Shrink Ratio XY').listen();
+
+
 
 
 
