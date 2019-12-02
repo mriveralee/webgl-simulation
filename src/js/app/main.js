@@ -117,7 +117,7 @@ export default class Main {
 
         // Add dat.GUI controls if dev
         var geoCallback = () => {
-          return that.particleSystem;
+          return that.getParticleSystem();
         };
         let controls = new DatGUI(this, geoCallback);
 
@@ -138,7 +138,9 @@ export default class Main {
     // Start render which does not wait for model fully loaded
     this.render();
   }
-
+  getParticleSystem() {
+      return this.particleSystem;
+  }
   render() {
     // Render rStats if Dev
     if(Config.showStats()) {

@@ -69,7 +69,7 @@ export default class DatGUI {
     /* Mesh */
     const meshFolder = gui.addFolder('Mesh');
     meshFolder.add(Config.mesh, 'translucent', true).name('Translucent').onChange((value) => {
-      var mesh = getGeometry().mesh;
+      let mesh = getGeometry().mesh;
       if(value) {
         mesh.material.transparent = true;
         mesh.material.opacity = 0.5;
@@ -78,12 +78,12 @@ export default class DatGUI {
       }
     });
     meshFolder.add(Config.mesh, 'wireframe', true).name('Wireframe').onChange((value) => {
-      var mesh = getGeometry().mesh;
+      let mesh = getGeometry().mesh;
       mesh.material.wireframe = value;
     });
 
     meshFolder.add(Config.mesh, 'showPoints', true).name('Show Points').onChange((value) => {
-      var geo = getGeometry();
+      let geo = getGeometry();
       geo.showPoints(value);
     });
 

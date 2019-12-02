@@ -48,9 +48,10 @@ export default class Geometry {
     this.showPoints(showPoints)
   }
 
-  showPoints(value) {
-    if (!value) {
+  showPoints(value=false) {
+    if (!value || (value && this.pointsMesh != null)) {
       this.scene.remove(this.pointsMesh);
+      this.pointsMesh = null;
       return;
     }
     const pointMaterial = new THREE.PointsMaterial({
