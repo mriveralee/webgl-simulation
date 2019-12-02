@@ -90,10 +90,13 @@ export default class DatGUI {
 
     const simulationFolder = gui.addFolder('Simulation');
     simulationFolder.add(Config.simulation, 'animate', true).name('Animate').listen();
-    simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity');
-    simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity');
-    simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping');
-    simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.035).name('Time Step');
+    simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity').listen();
+    simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity').listen();
+    simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping').listen();
+    simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.040).name('Time Step').listen();
+    simulationFolder.add(Config.simulation, 'avoidSelfIntersections', false).name('Avoid Self Intersections').listen();
+    simulationFolder.add(Config.simulation, 'fabricSelfIntersectionsMinDist', 0.01, 2).name('Self Intersections Test Dist').listen();
+    simulationFolder.add(Config.simulation, 'layerHeight', 0.1, 15).name('Hydrogel Layer Height').listen();
 
 
 

@@ -19,17 +19,24 @@ var config = {
   isMouseOver: false,
   simulation: {
     gridDim: {
-        X: 60,
-        Y: 20,
+        X: 20,
+        Y: 30,
+        spacing: 1.2,
     },
-    layerHeight: 10,
+    layerHeight: 0.5,//0.2,
+    hydrogelSpringStrengthZ: 0.5,
+    hydrogelSpringStrengthXY: 1,
+    hydrogelShrinkRatioZ: 0.9,
+    hydrogelShrinkRatioXY: 0.5,
+    avoidSelfIntersections: true,
+    fabricSelfIntersectionsMinDist: 1.2,
     fabricParticleMass: 10/1000,
     shape: 'SQUARE',
     animate: false,
     timeStep: 0.016, //0.016,
     useVerletIntegration: false,
     useVelocityDamping: true,
-    velocityDampingConstant: 0.003,
+    velocityDampingConstant: 0.025,
     useGravity: false,
     gravity: () => {
       return getGravity();
