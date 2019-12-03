@@ -9,7 +9,7 @@ var getGravity = () => {
 var getUpComponents = () => {
     return [0, 0, 1];
 };
-const particleSpacing = 1.00;
+const particleSpacing = 2.00;
 
 var config = {
     isDev: false,
@@ -21,18 +21,18 @@ var config = {
     showGrid: false,
     simulation: {
         fabric: {
-            structuralSpringStiffnessX: 1.000,
-            structuralSpringStiffnessY: 1.000,
-            bendSpringStiffnessX: 1.000,
-            bendSpringStiffnessY: 1.000,
-            shearSpringStiffness: 1.000,
+            structuralSpringStiffnessX: 15.0,
+            structuralSpringStiffnessY: 15.0,
+            bendSpringStiffnessX: 7.9,
+            bendSpringStiffnessY: 15.0,
+            shearSpringStiffness: 6.5,
         },
         hydrogel: {
-            layerHeight: 2,
-            springStiffnessZ: 1.000,
-            springStiffnessXY: 1.000,
-            springShrinkRatioZ: 1.001,
-            springShrinkRatioXY: 0.998,
+            layerHeight: 0.4,
+            springStiffnessZ: 0.1,
+            springStiffnessXY: 0.1,
+            springShrinkRatioZ: 0.5,
+            springShrinkRatioXY: 0,
             hydrogelColumns: 7,
         },
         gridDim: {
@@ -43,11 +43,11 @@ var config = {
 
 
         avoidSelfIntersections: true,
-        fabricSelfIntersectionsMinDist: particleSpacing,
+        fabricSelfIntersectionsMinDist: particleSpacing / 2,
         fabricParticleMass: 1/1000,
         shape: 'SQUARE',
-        animate: false,
-        timeStep: 0.016, //0.016,
+        animate: true,
+        timeStep: 0.009, //0.016, //0.016,
         useVerletIntegration: true,
         useVelocityDamping: true,
         velocityDampingConstant: 0.2,//0.025,
