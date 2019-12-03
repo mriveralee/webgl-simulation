@@ -33,7 +33,7 @@ var config = {
             springStiffnessXY: 1.000,
             springShrinkRatioZ: 1.001,
             springShrinkRatioXY: 0.998,
-            hydrogelColumns: 6,
+            hydrogelColumns: 7,
         },
         gridDim: {
             X: 30,

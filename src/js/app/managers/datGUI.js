@@ -85,15 +85,18 @@ export default class DatGUI {
     meshFolder.add(Config.mesh, 'showPoints', true).name('Show Points').onChange((value) => {
       let geo = getGeometry();
       geo.showPoints(value);
-    });
+    }).listen();
+
     meshFolder.add(Config.mesh, 'pointSize', 0.05, 1).name('Point Size');
 
     meshFolder.open();
 
 
     const simulationFolder = gui.addFolder('Simulation');
-    simulationFolder.add(Config.simulation, 'animate', true).name('Animate');
+    simulationFolder.add(Config.simulation, 'animate', true).name('Animate').listen();
     simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity');
+    simulationFolder.add(Config.simulation, 'useVerletIntegration', true).name('Use Verlet Integration');
+
     simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity');
     simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping');
     simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.040).name('Time Step');

@@ -110,12 +110,13 @@ export default class ParticleSystem extends Geometry {
                 //this.velocities[i].multiplyScalar(1 - dampingFactor);
 
             }
+            // Make the simulation move like honey
+            //this.velocities[i].multiplyScalar(0);
+
         }
         this.geo.verticesNeedUpdate = true;
         this.geo.normalsNeedUpdate = true;
         this.geo.colorsNeedUpdate = true;
-        // Make the simulation move like honey
-        //this.velocities[i].multiplyScalar(0);
     }
 
     resolveConstraints() {
@@ -279,11 +280,12 @@ export default class ParticleSystem extends Geometry {
         const points = this.geo.vertices;
         const textileParticleCount = this.gridParticles;
         const dim = this.gridDim;
-        const spacing = this.hydrogelSpacing;
 
+        const columnSpacing = this.hydrogelColumnSpacing;
+        const startColumn = this.hydrogelStartColumn;
         let j = 0;
         let springLength = 0;
-        for (let i = spacing; i < dim; i += spacing) {
+        for (let i = startColumn; i < dim; i += columnSpacing) {
             for (let k = 0; k < dim; k += 1) {
                 let textileParticleIndex = i * dim + k;
                 let hydrogelParticleIndex = textileParticleCount + j;
