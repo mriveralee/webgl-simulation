@@ -82,40 +82,41 @@ export default class DatGUI {
       mesh.material.wireframe = value;
     });
 
-    meshFolder.add(Config.mesh, 'showPoints', true).listen().name('Show Points').onChange((value) => {
+    meshFolder.add(Config.mesh, 'showPoints', true).name('Show Points').onChange((value) => {
       let geo = getGeometry();
       geo.showPoints(value);
     });
+    meshFolder.add(Config.mesh, 'pointSize', 0.05, 1).name('Point Size');
+
     meshFolder.open();
 
 
     const simulationFolder = gui.addFolder('Simulation');
-    simulationFolder.add(Config.simulation, 'animate', true).name('Animate').listen();
-    simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity').listen();
-    simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity').listen();
-    simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping').listen();
-    simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.040).name('Time Step').listen();
-    simulationFolder.add(Config.simulation, 'avoidSelfIntersections', false).name('Avoid Self Intersections').listen();
-    simulationFolder.add(Config.simulation, 'fabricSelfIntersectionsMinDist', 0, 2, 0.1).name('Self Intersections Test Dist').listen();
+    simulationFolder.add(Config.simulation, 'animate', true).name('Animate');
+    simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity');
+    simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity');
+    simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping');
+    simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.040).name('Time Step');
+    simulationFolder.add(Config.simulation, 'avoidSelfIntersections', false).name('Avoid Self Intersections');
+    simulationFolder.add(Config.simulation, 'fabricSelfIntersectionsMinDist', 0, 2, 0.1).name('Self Intersections Test Dist');
     simulationFolder.open();
 
     const fabricParametersFolder = gui.addFolder('Fabric');
-    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessX', 0, 15, 0.1).name('Structural Stiffness X').listen();
-    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessY', 0, 15, 0.1).name('Structural Stiffness X').listen();
-    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessX', 0, 15, 0.1).name('Bend Stiffness X').listen();
-    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessY', 0, 15, 0.1).name('Bend Stiffness Y').listen();
-    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffness', 0, 15, 0.1).name('Shear Stiffness').listen();
+    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessX', 0, 15, 0.1).name('Str. Stiff X');
+    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessY', 0, 15, 0.1).name('Str. Stiff Y');
+    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessX', 0, 15, 0.1).name('Bend Stiffness X');
+    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessY', 0, 15, 0.1).name('Bend Stiffness Y');
+    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffness', 0, 15, 0.1).name('Shear Stiffness');
     fabricParametersFolder.open();
 
     const hydrogelParametersFolder = gui.addFolder('Hydrogel');
-    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'layerHeight', 0.1, 15, 0.1).name('Layer Height').listen();
-    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessZ', 0, 30, 0.1).name('Stiffness Z').listen();
-    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessXY', 0, 30, 0.1).name('Stiffness XY').listen();
-    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springShrinkRatioZ', 0, 10, 0.1).name('Shrink Ratio Z').listen();
-    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springShrinkRatioXY', 0, 10, 0.1).name('Shrink Ratio XY').listen();
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'layerHeight', 0.1, 15, 0.1).name('Layer Height');
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessZ', 0, 30, 0.1).name('Stiffness Z');
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessXY', 0, 30, 0.1).name('Stiffness XY');
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springShrinkRatioZ', 0.01, 1.1, 0.01).name('Shrink Ratio Z');
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springShrinkRatioXY', 0.01 , 1.1, 0.01).name('Shrink Ratio XY');
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'hydrogelColumns', 1, Config.simulation.gridDim.X, 1).name('Column Count');
     hydrogelParametersFolder.open();
-
-
 
     /* Lights */
     // Ambient Light

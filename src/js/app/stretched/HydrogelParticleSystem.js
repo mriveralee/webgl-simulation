@@ -15,8 +15,20 @@ export default class ParticleSystem extends Geometry {
         this.geo = null;
         this.gridDim = Math.max(1, gridDim);
         this.gridParticles = this.gridDim * this.gridDim;
-        this.hydrogelSpacing = 2; //Math.min(this.gridDim/8, 2);
-        this.hydrogelParticles =  Math.floor(this.gridDim * (this.gridDim - this.hydrogelSpacing) / this.hydrogelSpacing);
+        this.pointSpacingXY = Config.simulation.gridDim.spacing;
+
+        this.hydrogelColumns = Config.simulation.hydrogel.hydrogelColumns;
+        let minSpaceCount = Math.max(1, this.hydrogelColumns - 1);
+        this.hydrogelColumnSpacing = Math.max(
+            1,
+            Math.ceil((this.gridDim - this.hydrogelColumns) / (minSpaceCount)));
+        let remainder = Math.floor(
+            (this.gridDim - this.hydrogelColumnSpacing * (minSpaceCount)) % this.hydrogelColumns);
+
+        this.hydrogelStartColumn = Math.floor(remainder / 2);
+        this.hydrogelParticles =  this.gridDim * this.hydrogelColumns;
+        console.log(this.hydrogelColumns, this.hydrogelColumnSpacing, this.hydrogelParticles);
+
         // Math.floor(this.gridDim * this.gridDim / this.hydrogelSpacing);
         this.numParticles = this.gridParticles + this.hydrogelParticles;
         this.masses = [];
@@ -162,9 +174,9 @@ export default class ParticleSystem extends Geometry {
         for (let i = 0; i < dim; i++) {
             for (let j = 0; j < dim; j++) {
                 positions.push(new THREE.Vector3( // swapped i and j here
-                    i * Config.simulation.gridDim.spacing,
-                    j * Config.simulation.gridDim.spacing,
-                    0));
+                    i * this.pointSpacingXY,
+                    j * this.pointSpacingXY,
+                    0)); // todo add random jitter here
                 }
         }
         let orderIndices = [];
@@ -208,15 +220,16 @@ export default class ParticleSystem extends Geometry {
 
         // Now make hydrogel particles
         const pointsLength = positions.length;
-        const spacing = this.hydrogelSpacing;
+        const columnSpacing = this.hydrogelColumnSpacing;
+        const startColumn = this.hydrogelStartColumn;
         let j = 0;
-        for (let i = spacing; i < dim; i += spacing) {
+        for (let i = startColumn; i < dim; i += columnSpacing) {
             for (let k = 0; k < dim; k += 1) {
                 let positionIndex = i * dim + k;
                 let firstPosition = positions[positionIndex];
                 let secondPosition = firstPosition.clone();
-                secondPosition.z += this.layerHeight;
-                //secondPosition.x -= 2/2;
+                secondPosition.z += this.layerHeight / 2;
+                //secondPosition.x -= ptSpacing;
                 positions.push(secondPosition);
                 orderIndices.push(positionIndex);
                 orderIndices.push(pointsLength + j);
@@ -233,7 +246,9 @@ export default class ParticleSystem extends Geometry {
         }
 
         this.makeParticles(positions, orderIndices);
-        this.place([0, 0, 0], [0, 0, 0], Config.mesh.showPoints);
+
+        let midPosition = (-this.gridDim/2 + this.pointSpacingXY/4)/2;
+        this.place([midPosition, midPosition, 0], [0, 0, 0], Config.mesh.showPoints);
         // Make the springs!
         this.createSprings();
     }
@@ -314,20 +329,20 @@ export default class ParticleSystem extends Geometry {
                 j += 1;
             }
         }
-        for (let i = textileParticleCount; i < (points.length - dim); i += 1) {
-            // Hydrogel-to-Hydrogel across lines
-            let hydrogelPtIndex = i;
-            let hydrogelPtIndex2 = i + dim;
-            let baseLength = (points[hydrogelPtIndex].clone().sub(points[hydrogelPtIndex2])).length();
-            springLength = initialExtensionRatioXY * baseLength;
-
-            this.constraints.push(
-                new Spring(
-                    hydrogelPtIndex,
-                    hydrogelPtIndex2,
-                    springLength,
-                    stiffnessXY));
-        }
+        // for (let i = textileParticleCount; i < (points.length - dim); i += 1) {
+        //     // Hydrogel-to-Hydrogel across lines
+        //     let hydrogelPtIndex = i;
+        //     let hydrogelPtIndex2 = i + dim;
+        //     let baseLength = (points[hydrogelPtIndex].clone().sub(points[hydrogelPtIndex2])).length();
+        //     springLength = initialExtensionRatioXY * baseLength;
+        //
+        //     this.constraints.push(
+        //         new Spring(
+        //             hydrogelPtIndex,
+        //             hydrogelPtIndex2,
+        //             springLength,
+        //             stiffnessXY));
+        // }
     }
 
     _createStructuralSprings(stiffnessX, stiffnessY) {

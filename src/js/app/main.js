@@ -214,7 +214,7 @@ export default class Main {
 
     this.particleSystem.makeParticlesTest(Config.simulation.shape);
     // Draw axes in scene
-    let axesLineLength = 10;
+    let axesLineLength = 5;
     SceneHelper.createPrincipalAxes(this.scene, axesLineLength);
     let gridSize = 10;
     let gridDivisions = 10;

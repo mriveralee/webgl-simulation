@@ -9,6 +9,7 @@ var getGravity = () => {
 var getUpComponents = () => {
     return [0, 0, 1];
 };
+const particleSpacing = 1.00;
 
 var config = {
     isDev: false,
@@ -20,28 +21,29 @@ var config = {
     showGrid: false,
     simulation: {
         fabric: {
-            structuralSpringStiffnessX: 0.2,
-            structuralSpringStiffnessY: 0.4,
-            bendSpringStiffnessX: 2,
-            bendSpringStiffnessY: 2,
-            shearSpringStiffness: 0.2,
+            structuralSpringStiffnessX: 1.000,
+            structuralSpringStiffnessY: 1.000,
+            bendSpringStiffnessX: 1.000,
+            bendSpringStiffnessY: 1.000,
+            shearSpringStiffness: 1.000,
         },
         hydrogel: {
-            layerHeight: 0.2,
-            springStiffnessZ: 20,
-            springStiffnessXY: 10,
-            springShrinkRatioZ: 1.0,
-            springShrinkRatioXY: 0.5,
+            layerHeight: 2,
+            springStiffnessZ: 1.000,
+            springStiffnessXY: 1.000,
+            springShrinkRatioZ: 1.001,
+            springShrinkRatioXY: 0.998,
+            hydrogelColumns: 6,
         },
         gridDim: {
-            X: 20,
+            X: 30,
             Y: 30,
-            spacing: 0.1,
+            spacing: particleSpacing,
         },
 
 
         avoidSelfIntersections: true,
-        fabricSelfIntersectionsMinDist: 0.1,
+        fabricSelfIntersectionsMinDist: particleSpacing,
         fabricParticleMass: 1/1000,
         shape: 'SQUARE',
         animate: false,
@@ -82,10 +84,11 @@ var config = {
         ]
     },
     mesh: {
+        pointSize: 0.5,
         enableHelper: false,
         wireframe: false,
         translucent: false,
-        showPoints: false,
+        showPoints: true,
         opacity: 1.0,
         material: {
             color: 0xffffff,
@@ -103,7 +106,7 @@ var config = {
         aspect: 1, // updated using window.devicePixelRatio
         posX: 0,
         posY: 0,
-        posZ: 5
+        posZ: 20
     },
     controls: {
         autoRotate: false,

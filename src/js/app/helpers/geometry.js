@@ -56,7 +56,7 @@ export default class Geometry {
     }
     const pointMaterial = new THREE.PointsMaterial({
       color: 0x800080,
-      size: 0.05,
+      size: Config.mesh.pointSize,
     });
     this.pointsMesh = new THREE.Points(this.geo, pointMaterial);
     this.pointsMesh.position.set(...this.mesh.position.toArray());
