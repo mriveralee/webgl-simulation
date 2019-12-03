@@ -9,16 +9,16 @@ export default class MeshHelper {
     const wireframe = new THREE.WireframeGeometry(geometry);
     const wireLine = new THREE.LineSegments(wireframe);
     wireLine.material.depthTest = false;
-    wireLine.material.opacity = 0.25;
-    wireLine.material.transparent = true;
+    //wireLine.material.opacity = 0.25;
+    //wireLine.material.transparent = true;
     mesh.add(wireLine);
     this.wireLine = wireLine;
 
     const edges = new THREE.EdgesGeometry(geometry);
     const edgesLine = new THREE.LineSegments(edges);
     edgesLine.material.depthTest = false;
-    edgesLine.material.opacity = 0.25;
-    edgesLine.material.transparent = true;
+    //edgesLine.material.opacity = 0.25;
+    //edgesLine.material.transparent = true;
     mesh.add(edgesLine);
     this.edgesLine = edgesLine;
 

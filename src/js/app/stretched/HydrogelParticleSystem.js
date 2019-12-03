@@ -35,6 +35,8 @@ export default class ParticleSystem extends Geometry {
         this.inverseMasses = [];
         this.forces = [];
         this.accelerations = [];
+        this.prevAccelerations = [];
+
         this.velocities = [];
         this.fixedPointIndices = [];
         this.oldPositions = [];
@@ -54,9 +56,9 @@ export default class ParticleSystem extends Geometry {
             this.inverseMasses.push(1.0 / mass);
             this.forces.push(new THREE.Vector3());
             this.accelerations.push(new THREE.Vector3());
+            this.prevAccelerations.push(new THREE.Vector3());
             this.velocities.push(new THREE.Vector3());
             //this.oldPositions.push(new THREE.Vector3());
-
         }
         this.constraints = [];
     }
@@ -86,6 +88,7 @@ export default class ParticleSystem extends Geometry {
 
     computeAccelerations() {
         for (let i = 0; i < this.numParticles ; i++) {
+            this.prevAccelerations[i].clone(this.accelerations[i]);
             this.accelerations[i].multiplyScalar(0);
             this.accelerations[i].addScaledVector(
                 this.forces[i], this.inverseMasses[i]);
@@ -113,16 +116,36 @@ export default class ParticleSystem extends Geometry {
                 //this.positions[i].addScaledVector(this.velocities[i], timeStep);
             } else {
                 // Use Verlet
-                let prevPos = this.oldPositions[i];
-                let currPos = this.geo.vertices[i].clone();
-                let copyCurrPos = currPos.clone();
-                let a = this.accelerations[i];
-                //
                 // // x += x - x_prev + a * t^2
-                this.geo.vertices[i].add(copyCurrPos);
-                this.geo.vertices[i].sub(prevPos);
-                this.geo.vertices[i].addScaledVector(a, sqTimeStep);
-                this.oldPositions[i] = this.oldPositions[i].copy(copyCurrPos);
+                let useVerletVelocities = false;
+                if (!useVerletVelocities) {
+                    let prevPos = this.oldPositions[i];
+                    let currPos = this.geo.vertices[i].clone();
+                    let copyCurrPos = currPos.clone();
+                    let a = this.accelerations[i];
+
+                    this.geo.vertices[i].add(copyCurrPos);
+                    this.geo.vertices[i].sub(prevPos);
+                    this.geo.vertices[i].addScaledVector(a, sqTimeStep);
+                    this.oldPositions[i] = this.oldPositions[i].copy(copyCurrPos);
+                    //
+                } else {
+                    let a = this.prevAccelerations[i];
+                    let nextA = this.accelerations[i];
+                    let vel = this.velocities[i];
+
+                    let nextPos =
+                        this.geo.vertices[i].addScaledVector(vel, timeStep)
+                            .addScaledVector(a, 0.5 * sqTimeStep);
+
+                    let nextVel = a.clone().add(nextA);
+                    nextVel = nextVel.multiplyScalar(0.5 * timeStep);
+                    nextVel = nextVel.add(vel);
+                    // Accelerations happens after updating forces
+                    // this.accelerations[i] = nextAcc
+                    this.geo.vertices[i] = nextPos;
+                    this.velocities[i] = nextVel;
+                }
                 //this.velocities[i].addScaledVector(this.accelerations[i], timeStep);
                 //this.velocities[i].multiplyScalar(1 - dampingFactor);
 
@@ -450,20 +473,6 @@ export default class ParticleSystem extends Geometry {
                 j += 1;
             }
         }
-        // for (let i = textileParticleCount; i < (points.length - dim); i += 1) {
-        //     // Hydrogel-to-Hydrogel across lines
-        //     let hydrogelPtIndex = i;
-        //     let hydrogelPtIndex2 = i + dim;
-        //     let baseLength = (points[hydrogelPtIndex].clone().sub(points[hydrogelPtIndex2])).length();
-        //     springLength = initialExtensionRatioXY * baseLength;
-        //
-        //     this.constraints.push(
-        //         new Spring(
-        //             hydrogelPtIndex,
-        //             hydrogelPtIndex2,
-        //             springLength,
-        //             stiffnessXY));
-        // }
     }
 
     _createStructuralSprings(stiffnessX, stiffnessY) {
@@ -527,20 +536,25 @@ export default class ParticleSystem extends Geometry {
         // before column
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 0; i < this.gridParticles; i += 2) {
-            let springLength = 0;
-            if (i - (1 + dim) >= 0) {
-                springLength = points[i].clone().sub(points[i - (1 + dim)]).length();
-                this.constraints.push(
-                    new Spring(i, i - (1 + dim), springLength, stiffness));
-            }
-            if (i + dim - 1 < this.gridParticles) {
-                springLength = points[i].clone().sub(points[i + dim - 1]).length();
-                this.constraints.push(
-                    new Spring(i, i + dim - 1, springLength, stiffness));
+        for (let i = 0; i < this.dim; i += 1) {
+            for (let j = 0; j < this.dim; j += 1) {
+                let springLength = 0;
+                let currentIndex = i * dim + k;
+                if (i > 0 && k > 0) {
+                    let beforeShearIndex = (i - 1) * dim + (k - 1);
+                    springLength = points[currentIndex].clone().sub(points[beforeShearIndex]).length();
+                    this.constraints.push(
+                        new Spring(currentIndex, beforeShearIndex, springLength, stiffness));
+                }
+                if ((i + 1) < this.gridDim && (k + 1) < this.gridDim) {
+                    let nextShearIndex = (i - 1) * dim + (k + 1);
+                    springLength = points[currentIndex].clone().sub(points[nextShearIndex]).length();
+                    this.constraints.push(
+                        new Spring(currentIndex, nextShearIndex, springLength, stiffness));
                 }
             }
         }
+    }
 
     _createFixedPositionSprings(stiffness = 1000) {
         // Fixed point springs for pinning
