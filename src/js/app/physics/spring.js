@@ -10,22 +10,24 @@ export default class Spring {
   }
 
   resolveConstraint(positions, forces) {
-    const posA = positions[this.indexA].clone();
-    const posB = positions[this.indexB].clone();
+    const posA = positions[this.indexA];
+    const posB = positions[this.indexB];
     let [forceA, forceB] = this._computeForces(posA, posB);
     forces[this.indexA].add(forceA);
     forces[this.indexB].add(forceB);
   }
 
   _computeForces(posA, posB) {
-    let deltaPosA = posA.sub(posB);
+    let deltaPosA = posA.clone().sub(posB);
     let lengthDeltaPosA = deltaPosA.length();
-    deltaPosA = deltaPosA.normalize();
-    let forceA = deltaPosA.multiplyScalar(
-      -1 * this.stiffness * ((lengthDeltaPosA / this.restLength) - 1));
-
+    //deltaPosA = deltaPosA.normalize();
+    // let forceA = deltaPosA.multiplyScalar(
+    //   -1 * this.stiffness * ((lengthDeltaPosA / this.restLength) - 1));
+    let forceA = deltaPosA.normalize().multiplyScalar(
+      -1 * this.stiffness * ((lengthDeltaPosA - this.restLength)));
       // -1 * this.stiffness * (lengthDeltaPosA - this.restLength));
     let forceB = forceA.clone().multiplyScalar(-1);
+
     return [forceA, forceB];
   }
 

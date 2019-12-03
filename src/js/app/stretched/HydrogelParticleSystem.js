@@ -40,8 +40,16 @@ export default class ParticleSystem extends Geometry {
         this.oldPositions = [];
         this.layerHeight = Config.simulation.hydrogel.layerHeight;
         // Positions are handled in our geometry
-        let mass = Config.simulation.fabricParticleMass;
+        let massFabric = Config.simulation.fabric.particleMass;
+        let massHydrogel = Config.simulation.hydrogel.particleMass;
+        let mass = 0;
         for (let i = 0; i < this.numParticles; i++) {
+            if (i < this.gridParticles) {
+                mass = massFabric;
+            } else {
+                mass = massHydrogel;
+
+            }
             this.masses.push(mass);
             this.inverseMasses.push(1.0 / mass);
             this.forces.push(new THREE.Vector3());
@@ -229,7 +237,7 @@ export default class ParticleSystem extends Geometry {
                 let positionIndex = i * dim + k;
                 let firstPosition = positions[positionIndex];
                 let secondPosition = firstPosition.clone();
-                secondPosition.z += this.layerHeight / 2;
+                secondPosition.z += this.layerHeight;
                 let hydrogelPositionIndex = pointsLength + j;
                 //secondPosition.x -= ptSpacing;
                 positions.push(secondPosition);
@@ -304,18 +312,18 @@ export default class ParticleSystem extends Geometry {
 
         this._createHydrogelSprings(
             Config.simulation.hydrogel.springStiffnessZ,
-            Config.simulation.hydrogel.springStiffnessZ,
+            Config.simulation.hydrogel.springStiffnessXY,
             Config.simulation.hydrogel.springShrinkRatioZ,
-            Config.simulation.hydrogel.springShrinkRatioZ);
+            Config.simulation.hydrogel.springShrinkRatioXY);
             //
             // this._createHydrogelSprings(
             //     Config.simulation.hydrogel.springStiffnessZ,
             //     Config.simulation.hydrogel.springStiffnessXY,
             //     Config.simulation.hydrogel.springShrinkRatioZ,
             //     Config.simulation.hydrogel.springShrinkRatioXY);
-        //const halfGridDim = this.gridDim / 2;
-        //const seedPtIndex = halfGridDim + halfGridDim * halfGridDim;
-        //this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, -4.0));
+        const halfGridDim = this.gridDim / 2;
+        const seedPtIndex = halfGridDim + halfGridDim * this.gridDim;
+        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, -4.0));
         //his._createFixedPositionSprings(150);
     }
 

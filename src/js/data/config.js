@@ -9,7 +9,7 @@ var getGravity = () => {
 var getUpComponents = () => {
     return [0, 0, 1];
 };
-const particleSpacing = 2.00;
+const particleSpacing = 2;
 
 var config = {
     isDev: false,
@@ -21,33 +21,32 @@ var config = {
     showGrid: false,
     simulation: {
         fabric: {
-            structuralSpringStiffnessX: 15.0,
-            structuralSpringStiffnessY: 15.0,
-            bendSpringStiffnessX: 7.9,
-            bendSpringStiffnessY: 15.0,
-            shearSpringStiffness: 6.5,
+            structuralSpringStiffnessX: 500,
+            structuralSpringStiffnessY: 16,
+            bendSpringStiffnessX: 8,
+            bendSpringStiffnessY: 8,
+            shearSpringStiffness: 20,
+            particleMass: 1, //1/1000,
         },
         hydrogel: {
-            layerHeight: 0.4,
-            springStiffnessZ: 0.1,
-            springStiffnessXY: 0.1,
-            springShrinkRatioZ: 0.5,
-            springShrinkRatioXY: 0,
+            layerHeight: 0.2,
+            springStiffnessZ: 20,
+            springStiffnessXY: 20,
+            springShrinkRatioZ: 0.78,
+            springShrinkRatioXY: 0.9,
             hydrogelColumns: 7,
+            particleMass: 1,
         },
         gridDim: {
             X: 30,
             Y: 30,
             spacing: particleSpacing,
         },
-
-
         avoidSelfIntersections: true,
         fabricSelfIntersectionsMinDist: particleSpacing / 2,
-        fabricParticleMass: 1/1000,
         shape: 'SQUARE',
-        animate: true,
-        timeStep: 0.009, //0.016, //0.016,
+        animate: false,
+        timeStep: 0.04, //0.016, //0.016,
         useVerletIntegration: true,
         useVelocityDamping: true,
         velocityDampingConstant: 0.2,//0.025,
@@ -84,9 +83,9 @@ var config = {
         ]
     },
     mesh: {
-        pointSize: 0.5,
+        pointSize: 0.7,
         enableHelper: false,
-        wireframe: false,
+        wireframe: true,
         translucent: false,
         showPoints: true,
         opacity: 1.0,
