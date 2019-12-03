@@ -63,12 +63,21 @@ export default class ParticleSystem extends Geometry {
 
     computeForces() {
         let gravity = new THREE.Vector3(...Config.simulation.getGravityComponents());
+        let particleArea = this.pointSpacingXY * this.pointSpacingXY / (1000 * 1000);
+        let coeffOfDrag = Config.simulation.coefficientOfDrag; // For a flat plate; sphere is about 0.48
         for (let i = 0; i < this.numParticles; i++) {
             // Clear forces
             this.forces[i].multiplyScalar(0);
             // Gravity
             if (Config.simulation.useGravity) {
                 this.forces[i].addScaledVector(gravity, this.masses[i]);
+            }
+            // Drag Forces
+            if (Config.simulation.useDragForce) {
+                let vel = this.velocities[i].clone();
+                let dragForce = vel.multiply(this.velocities[i]).multiplyScalar(coeffOfDrag * particleArea * -1);
+                this.forces[i].add(dragForce);
+
             }
         }
         // Resolve any spring constraints
@@ -323,7 +332,8 @@ export default class ParticleSystem extends Geometry {
             //     Config.simulation.hydrogel.springShrinkRatioXY);
         const halfGridDim = this.gridDim / 2;
         const seedPtIndex = halfGridDim + halfGridDim * this.gridDim;
-        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, -4.0));
+        let zBiasOffset = Config.simulation.biasOffsetZ;
+        this.geo.vertices[seedPtIndex] = this.geo.vertices[seedPtIndex].add(new THREE.Vector3(0,0, zBiasOffset));
         //his._createFixedPositionSprings(150);
     }
 

@@ -42,6 +42,9 @@ var config = {
             Y: 30,
             spacing: particleSpacing,
         },
+        biasOffsetZ: -4,
+        useDragForce: true,
+        coefficientOfDrag: 1.28,// 0.5, // 1.28 for flat sheet; 0.5 for sphere
         avoidSelfIntersections: true,
         fabricSelfIntersectionsMinDist: particleSpacing / 2,
         shape: 'SQUARE',

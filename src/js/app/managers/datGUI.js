@@ -99,9 +99,13 @@ export default class DatGUI {
 
     simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity');
     simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping');
-    simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.040).name('Time Step');
+    simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.1).name('Time Step');
+    simulationFolder.add(Config.simulation, 'biasOffsetZ', -20, 20).name('Bias Z Offset');
     simulationFolder.add(Config.simulation, 'avoidSelfIntersections', false).name('Avoid Self Intersections');
     simulationFolder.add(Config.simulation, 'fabricSelfIntersectionsMinDist', 0, 2, 0.1).name('Self Intersections Test Dist');
+    simulationFolder.add(Config.simulation, 'useDragForce', false).name('Use Drag Forces');
+    simulationFolder.add(Config.simulation, 'coefficientOfDrag', 0, 2, 0.01).name('Coefficient of Drag');
+
     simulationFolder.open();
 
     const fabricParametersFolder = gui.addFolder('Fabric');
