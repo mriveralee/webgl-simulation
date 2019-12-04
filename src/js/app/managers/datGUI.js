@@ -106,7 +106,7 @@ export default class DatGUI {
     simulationFolder.add(Config.simulation, 'useVerletIntegration', true).name('Use Verlet Integration');
 
     simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity');
-    simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 0.25).name('velocityDampingConstantDamping');
+    simulationFolder.add(Config.simulation, 'velocityDampingConstant', 0.001, 1, 0.001).name('velocityDampingConstantDamping');
     simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.1).name('Time Step');
     simulationFolder.add(Config.simulation, 'biasOffsetZ', -20, 20).name('Bias Z Offset');
     simulationFolder.add(Config.simulation, 'avoidSelfIntersections', false).name('Avoid Self Intersections');
@@ -122,7 +122,9 @@ export default class DatGUI {
     fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessY', 0, 1000, 0.001).name('Str. Stiff Y');
     fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessX', 0, 1000, 0.001).name('Bend Stiffness X');
     fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessY', 0, 1000, 0.001).name('Bend Stiffness Y');
-    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffness', 0, 1000, 0.1).name('Shear Stiffness');
+    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffnessXY', 0, 1000, 0.1).name('Shear XY Stiff. ');
+    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffnessYX', 0, 1000, 0.1).name('Shear YX Stiff. ');
+
     fabricParametersFolder.open();
 
     const hydrogelParametersFolder = gui.addFolder('Hydrogel');

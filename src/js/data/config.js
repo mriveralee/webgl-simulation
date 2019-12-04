@@ -25,7 +25,8 @@ var config = {
             structuralSpringStiffnessY: 16,
             bendSpringStiffnessX: 8,
             bendSpringStiffnessY: 8,
-            shearSpringStiffness: 20,
+            shearSpringStiffnessXY: 20,
+            shearSpringStiffnessYX: 0.1,
             particleMass: 1, //1/1000,
         },
         hydrogel: {
@@ -43,7 +44,7 @@ var config = {
             spacing: particleSpacing,
         },
         biasOffsetZ: -4,
-        useDragForce: true,
+        useDragForce: false,
         coefficientOfDrag: 1.28,// 0.5, // 1.28 for flat sheet; 0.5 for sphere
         avoidSelfIntersections: true,
         fabricSelfIntersectionsMinDist: particleSpacing / 2,
@@ -52,7 +53,7 @@ var config = {
         timeStep: 0.016,//0.04, //0.016, //0.016,
         useVerletIntegration: false,
         useVelocityDamping: false,
-        velocityDampingConstant: 0.2,//0.025,
+        velocityDampingConstant: 0.002,//0.025,
         useGravity: false,
         useFloorConstraint: false,
         visualizeConstraints: false,

@@ -132,36 +132,20 @@ export default class ParticleSystem extends Geometry {
                 //this.positions[i].addScaledVector(this.velocities[i], timeStep);
             } else {
                 // Use Verlet
-                // // x += x - x_prev + a * t^2
-                let useVerletVelocities = false;
-                if (!useVerletVelocities) {
-                    let prevPos = this.oldPositions[i];
-                    let currPos = this.geo.vertices[i].clone();
-                    let copyCurrPos = currPos.clone();
-                    let a = this.accelerations[i];
+                // // x_new = 2*x - x_prev + a * t^2
+                // with damping:
+                // x_new = (2-d)*x - (1-d)*x_prev + a * t^2
+                let prevPos = this.oldPositions[i];
+                let currPos = this.geo.vertices[i].clone();
+                let copyCurrPos = currPos.clone();
+                let a = this.accelerations[i];
 
-                    this.geo.vertices[i].add(copyCurrPos);
-                    this.geo.vertices[i].sub(prevPos);
-                    this.geo.vertices[i].addScaledVector(a, sqTimeStep);
-                    this.oldPositions[i] = this.oldPositions[i].copy(copyCurrPos);
-                    //
-                } else {
-                    let a = this.prevAccelerations[i];
-                    let nextA = this.accelerations[i];
-                    let vel = this.velocities[i];
+                this.geo.vertices[i].multiplyScalar(2 - dampingFactor);
+                this.geo.vertices[i].addScaledVector(prevPos, -1 * (1 - dampingFactor));
+                this.geo.vertices[i].addScaledVector(a, sqTimeStep);
+                this.oldPositions[i] = this.oldPositions[i].copy(copyCurrPos);
+                //
 
-                    let nextPos =
-                        this.geo.vertices[i].addScaledVector(vel, timeStep)
-                            .addScaledVector(a, 0.5 * sqTimeStep);
-
-                    let nextVel = a.clone().add(nextA);
-                    nextVel = nextVel.multiplyScalar(0.5 * timeStep);
-                    nextVel = nextVel.add(vel);
-                    // Accelerations happens after updating forces
-                    // this.accelerations[i] = nextAcc
-                    this.geo.vertices[i] = nextPos;
-                    this.velocities[i] = nextVel;
-                }
                 //this.velocities[i].addScaledVector(this.accelerations[i], timeStep);
                 //this.velocities[i].multiplyScalar(1 - dampingFactor);
 
@@ -411,7 +395,8 @@ export default class ParticleSystem extends Geometry {
         let vertices = this.geo.vertices;
         if (this.constraintsGeometries.length == 0) {
             // init constraint geometries:
-
+            // TODO use  with one geometry to do faster rendering
+            // new THREE.LineSegments( geometry, material );
             for (let i = 0; i < this.constraints.length; i++) {
                 let constraint = this.constraints[i];
                 let indexA = constraint.indexA;
@@ -443,7 +428,9 @@ export default class ParticleSystem extends Geometry {
             Config.simulation.fabric.bendSpringStiffnessX,
             Config.simulation.fabric.bendSpringStiffnessY); // Bend extension (2 away )
 
-        this._createShearSprings(Config.simulation.fabric.shearSpringStiffness);
+        this._createShearSprings(
+            Config.simulation.fabric.shearSpringStiffnessXY,
+            Config.simulation.fabric.shearSpringStiffnessYX);
 
         this._createHydrogelSprings(
             Config.simulation.hydrogel.springStiffnessZ,
@@ -481,13 +468,13 @@ export default class ParticleSystem extends Geometry {
                 let baseLength = (points[textileParticleIndex].clone().sub(points[hydrogelParticleIndex])).length();
                 springLength = initialExtensionRatioZ * baseLength;
 
-                this.constraints.push(
-                    new Spring(
-                        textileParticleIndex,
-                        hydrogelParticleIndex,
-                        springLength,
-                        stiffnessZ,
-                        HYDROGEL_TO_FABRIC_SPRING));
+                // this.constraints.push(
+                //     new Spring(
+                //         textileParticleIndex,
+                //         hydrogelParticleIndex,
+                //         springLength,
+                //         stiffnessZ,
+                //         HYDROGEL_TO_FABRIC_SPRING));
                 // Hydrogel-to-Hydrogel Spring (along gel line)
                 // (gPt-1) - gPt
                 if (k != 0) {
@@ -521,30 +508,30 @@ export default class ParticleSystem extends Geometry {
                 //        gPt
                 //     /   |   \
                 // fPt-1  fPt0 fpt+1
-                if (k - 1 >= 0) {
-                    let previousTextileParticleIndex = textileParticleIndex - 1;
-                    baseLength = (points[previousTextileParticleIndex].clone().sub(points[hydrogelParticleIndex])).length();
-                    springLength = initialExtensionRatioZ * baseLength;
-                    this.constraints.push(
-                        new Spring(
-                            previousTextileParticleIndex,
-                            hydrogelParticleIndex,
-                            springLength,
-                            stiffnessZ,
-                            HYDROGEL_TO_FABRIC_SPRING));
-                }
-                if (k + 1 < this.gridDim) {
-                    let nextTextileParticleIndex = textileParticleIndex + 1;
-                    baseLength = (points[nextTextileParticleIndex].clone().sub(points[hydrogelParticleIndex])).length();
-                    springLength = initialExtensionRatioZ * baseLength;
-                    this.constraints.push(
-                        new Spring(
-                            nextTextileParticleIndex,
-                            hydrogelParticleIndex,
-                            springLength,
-                            stiffnessZ,
-                            HYDROGEL_TO_FABRIC_SPRING));
-                }
+                // if (k - 1 >= 0) {
+                //     let previousTextileParticleIndex = textileParticleIndex - 1;
+                //     baseLength = (points[previousTextileParticleIndex].clone().sub(points[hydrogelParticleIndex])).length();
+                //     springLength = initialExtensionRatioZ * baseLength;
+                //     this.constraints.push(
+                //         new Spring(
+                //             previousTextileParticleIndex,
+                //             hydrogelParticleIndex,
+                //             springLength,
+                //             stiffnessZ,
+                //             HYDROGEL_TO_FABRIC_SPRING));
+                // }
+                // if (k + 1 < this.gridDim) {
+                //     let nextTextileParticleIndex = textileParticleIndex + 1;
+                //     baseLength = (points[nextTextileParticleIndex].clone().sub(points[hydrogelParticleIndex])).length();
+                //     springLength = initialExtensionRatioZ * baseLength;
+                //     this.constraints.push(
+                //         new Spring(
+                //             nextTextileParticleIndex,
+                //             hydrogelParticleIndex,
+                //             springLength,
+                //             stiffnessZ,
+                //             HYDROGEL_TO_FABRIC_SPRING));
+                // }
 
                 // Diagonal springs from  fabric to gel across X axis
                 //        gPt
@@ -646,7 +633,7 @@ export default class ParticleSystem extends Geometry {
         }
     }
 
-    _createShearSprings(stiffness = 100) {
+    _createShearSprings(stiffnessXY=100, stiffnessYX=100) {
         // SHEAR SPRINGS
         //      * (i + dim - 1)
         //      | \
@@ -665,13 +652,13 @@ export default class ParticleSystem extends Geometry {
                     let beforeShearIndex = (i - 1) * dim + (k - 1);
                     springLength = points[currentIndex].clone().sub(points[beforeShearIndex]).length();
                     this.constraints.push(
-                        new Spring(currentIndex, beforeShearIndex, springLength, stiffness, FABRIC_SPRING_SHEAR));
+                        new Spring(currentIndex, beforeShearIndex, springLength, stiffnessXY, FABRIC_SPRING_SHEAR));
                 }
                 if (i >= 1 && (k + 1) < this.gridDim) {
                     let nextShearIndex = (i - 1) * dim + (k + 1);
                     springLength = points[currentIndex].clone().sub(points[nextShearIndex]).length();
                     this.constraints.push(
-                        new Spring(currentIndex, nextShearIndex, springLength, stiffness, FABRIC_SPRING_SHEAR));
+                        new Spring(currentIndex, nextShearIndex, springLength, stiffnessYX, FABRIC_SPRING_SHEAR));
                 }
             }
         }
