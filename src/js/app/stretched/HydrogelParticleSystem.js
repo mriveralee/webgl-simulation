@@ -395,7 +395,9 @@ export default class ParticleSystem extends Geometry {
         // Make the springs!
         this.createSprings();
         // Setup visualization for constraints
-        this._createConstraintVisualizations(startPos, startRot);
+        if (Config.simulation.visualizeConstraints) {
+            this._createConstraintVisualizations(startPos, startRot);
+        }
 
     }
 

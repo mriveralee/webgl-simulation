@@ -90,6 +90,7 @@ export default class DatGUI {
     }).listen();
 
 
+    meshFolder.add(Config.simulation, 'visualizeConstraints', true).name('Show Springs');
 
     meshFolder.add(Config.mesh, 'pointSize', 0.05, 1).name('Point Size');
 
@@ -98,6 +99,7 @@ export default class DatGUI {
 
     const simulationFolder = gui.addFolder('Simulation');
     simulationFolder.add(Config.simulation, 'animate', true).name('Animate').listen();
+
     simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity');
     simulationFolder.add(Config.simulation, 'useFloorConstraint', false).name('Use Floor Constraint');
 
@@ -108,7 +110,7 @@ export default class DatGUI {
     simulationFolder.add(Config.simulation, 'timeStep', 0.001, 0.1).name('Time Step');
     simulationFolder.add(Config.simulation, 'biasOffsetZ', -20, 20).name('Bias Z Offset');
     simulationFolder.add(Config.simulation, 'avoidSelfIntersections', false).name('Avoid Self Intersections');
-    simulationFolder.add(Config.simulation, 'fabricSelfIntersectionsMinDist', 0, 2, 0.1).name('Self Intersections Test Dist');
+    simulationFolder.add(Config.simulation, 'fabricSelfIntersectionsMinDist', 0, 2, 0.1).name('Self Inter. Test Dist');
     simulationFolder.add(Config.simulation, 'useDragForce', false).name('Use Drag Forces');
     simulationFolder.add(Config.simulation, 'coefficientOfDrag', 0, 2, 0.01).name('Coefficient of Drag');
 
