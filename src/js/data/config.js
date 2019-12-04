@@ -54,6 +54,7 @@ var config = {
         useVelocityDamping: true,
         velocityDampingConstant: 0.2,//0.025,
         useGravity: false,
+        useFloorConstraint: false,
         gravity: () => {
             return getGravity();
         },

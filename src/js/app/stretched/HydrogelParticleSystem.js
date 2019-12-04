@@ -84,6 +84,10 @@ export default class ParticleSystem extends Geometry {
         }
         // Resolve any spring constraints
         this.resolveConstraints();
+
+        this.geo.verticesNeedUpdate = true;
+        this.geo.normalsNeedUpdate = true;
+        this.geo.colorsNeedUpdate = true;
     }
 
     computeAccelerations() {
@@ -154,21 +158,36 @@ export default class ParticleSystem extends Geometry {
             //this.velocities[i].multiplyScalar(0);
 
         }
-        this.geo.verticesNeedUpdate = true;
-        this.geo.normalsNeedUpdate = true;
-        this.geo.colorsNeedUpdate = true;
+
     }
 
     resolveConstraints() {
         if (Config.simulation.avoidSelfIntersections) {
             this._resolveSelfIntersections(this.geo.vertices, Config.simulation.fabricSelfIntersectionsMinDist);
         }
+
+        // REsolve other constraints
         for (let i = 0; i < this.constraints.length; i++) {
             this.constraints[i].resolveConstraint(this.geo.vertices, this.forces);
         }
 
+        if (Config.simulation.useFloorConstraint) {
+            this._resolveFloorConstraint(this.geo.vertices, 0);
+
+        }
+
+
+
     }
 
+    _resolveFloorConstraint(vertices, zPosition) {
+        for (let i = 0; i < vertices.length; i++) {
+            if (Math.abs(vertices[i].z - zPosition) <= 0.0001) {
+                vertices[i].add(new THREE.Vector3(0,0, zPosition));
+            }
+        }
+
+    }
     _resolveSelfIntersections(vertices, minIntersectionDistance) {
         const dim = this.gridDim;
         const particleCount = this.gridParticles; //vertices.length; //this.gridParticles;
@@ -478,22 +497,25 @@ export default class ParticleSystem extends Geometry {
     _createStructuralSprings(stiffnessX, stiffnessY) {
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 0; i < this.gridParticles; i++) {
-            let springLength = 0;
-            // NEIGHBORING STRUCTURAL SPRINGS
-            // *(i-1) --- *(i)
-            //            |
-            //            * (i-dim)
-            // TODO pass a stiffness constant
-            if (i - dim >= 0) {
-                // before row
-                springLength = (points[i].clone().sub(points[i - dim])).length();
-                this.constraints.push(new Spring(i, i - dim, springLength, stiffnessY));
-            }
-            // before column
-            if (i - 1 >= 0) {
-                springLength = points[i].clone().sub(points[i - 1]).length();
-                this.constraints.push(new Spring(i, i - 1, springLength, stiffnessX));
+
+        for (let i = 0; i < dim; i += 1) {
+            for (let k = 0; k < dim; k += 1) {
+                let currentIndex = i * dim + k;
+                let springLength = 0;
+                // NEIGHBORING STRUCTURAL SPRINGS
+                // *(i-1)*dim+k --- *(i)*dim + k
+                //            |
+                //            * (i*dim + k)
+                if (i > 0) {
+                    let prevColIndex = (i - 1) * dim + k;
+                    springLength = (points[currentIndex].clone().sub(points[prevColIndex])).length();
+                    this.constraints.push(new Spring(currentIndex, prevColIndex, springLength, stiffnessX));
+                }
+                if (k + 1 < dim) {
+                    let nextIndex = currentIndex + 1;
+                    springLength = (points[currentIndex].clone().sub(points[nextIndex])).length();
+                    this.constraints.push(new Spring(currentIndex, nextIndex, springLength, stiffnessY));
+                }
             }
         }
     }
@@ -536,17 +558,18 @@ export default class ParticleSystem extends Geometry {
         // before column
         const points = this.geo.vertices;
         const dim = this.gridDim;
-        for (let i = 0; i < this.dim; i += 1) {
-            for (let j = 0; j < this.dim; j += 1) {
-                let springLength = 0;
+        let springLength = 0;
+
+        for (let i = 0; i < dim; i += 1) {
+            for (let k = 0; k < dim; k += 1) {
                 let currentIndex = i * dim + k;
-                if (i > 0 && k > 0) {
+                if (i >= 1 && k >= 1) {
                     let beforeShearIndex = (i - 1) * dim + (k - 1);
                     springLength = points[currentIndex].clone().sub(points[beforeShearIndex]).length();
                     this.constraints.push(
                         new Spring(currentIndex, beforeShearIndex, springLength, stiffness));
                 }
-                if ((i + 1) < this.gridDim && (k + 1) < this.gridDim) {
+                if (i >= 1 && (k + 1) < this.gridDim) {
                     let nextShearIndex = (i - 1) * dim + (k + 1);
                     springLength = points[currentIndex].clone().sub(points[nextShearIndex]).length();
                     this.constraints.push(

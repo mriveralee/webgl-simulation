@@ -65,6 +65,8 @@ export default class DatGUI {
       this.controls.enableRotate = true;
     });
 
+    controlsFolder.add(Config, 'showGrid', true).name('Show Grid');
+
 
     /* Mesh */
     const meshFolder = gui.addFolder('Mesh');
@@ -87,6 +89,8 @@ export default class DatGUI {
       geo.showPoints(value);
     }).listen();
 
+
+
     meshFolder.add(Config.mesh, 'pointSize', 0.05, 1).name('Point Size');
 
     meshFolder.open();
@@ -95,6 +99,8 @@ export default class DatGUI {
     const simulationFolder = gui.addFolder('Simulation');
     simulationFolder.add(Config.simulation, 'animate', true).name('Animate').listen();
     simulationFolder.add(Config.simulation, 'useGravity', true).name('Use Gravity');
+    simulationFolder.add(Config.simulation, 'useFloorConstraint', false).name('Use Floor Constraint');
+
     simulationFolder.add(Config.simulation, 'useVerletIntegration', true).name('Use Verlet Integration');
 
     simulationFolder.add(Config.simulation, 'useVelocityDamping', true).name('Damp Velocity');
