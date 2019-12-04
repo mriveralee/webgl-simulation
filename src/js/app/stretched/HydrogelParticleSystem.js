@@ -20,6 +20,7 @@ export default class ParticleSystem extends Geometry {
         super(scene);
         this.scene = scene;
         this.geo = null;
+        this.shouldVisualizeConstraints = Config.simulation.visualizeConstraints;
 
         this.gridDim = Math.max(1, gridDim);
         this.gridParticles = this.gridDim * this.gridDim;
@@ -72,6 +73,7 @@ export default class ParticleSystem extends Geometry {
         this.constraints = [];
 
         this.constraintsGeometries = [];
+        this.constraintsLines = [];
 
     }
 
@@ -123,6 +125,7 @@ export default class ParticleSystem extends Geometry {
         for (let i = 0; i < this.numParticles; i++) {
 
             if (!Config.simulation.useVerletIntegration) {
+                // Uses Sympletic Euler (new velocity updates the current position)
                 this.velocities[i].addScaledVector(this.accelerations[i], timeStep);
                 this.velocities[i].multiplyScalar(1 - dampingFactor);
                 this.geo.vertices[i].addScaledVector(this.velocities[i], timeStep);
@@ -167,9 +170,6 @@ export default class ParticleSystem extends Geometry {
             //this.velocities[i].multiplyScalar(0);
 
         }
-
-        this.visualizeConstraints();
-
         this.geo.verticesNeedUpdate = true;
         this.geo.normalsNeedUpdate = true;
         this.geo.colorsNeedUpdate = true;
@@ -191,12 +191,19 @@ export default class ParticleSystem extends Geometry {
         }
     }
 
-    visualizeConstraints() {
+    visualizeConstraints(shouldVisualizeConstraints) {
+        this.shouldVisualizeConstraints = shouldVisualizeConstraints;
         for (let i = 0; i < this.constraintsGeometries.length; i++) {
-            let constraintGeo = this.constraintsGeometries[i];
-            constraintGeo.verticesNeedUpdate = true;
-            constraintGeo.normalsNeedUpdate = true;
-            constraintGeo.colorsNeedUpdate = true;
+            let constraintLine = this.constraintsLines[i];
+            if (this.shouldVisualizeConstraints) {
+                constraintLine.visible = true;
+                let constraintGeo = this.constraintsGeometries[i];
+                constraintGeo.verticesNeedUpdate = true;
+                constraintGeo.normalsNeedUpdate = true;
+                constraintGeo.colorsNeedUpdate = true;
+            } else {
+                constraintLine.visible = false;
+            }
         }
 
     }
@@ -395,13 +402,12 @@ export default class ParticleSystem extends Geometry {
         // Make the springs!
         this.createSprings();
         // Setup visualization for constraints
-        if (Config.simulation.visualizeConstraints) {
-            this._createConstraintVisualizations(startPos, startRot);
-        }
+        this._createConstraintsVisualizations();
+        this.visualizeConstraints();
 
     }
 
-    _createConstraintVisualizations() {
+    _createConstraintsVisualizations() {
         let vertices = this.geo.vertices;
         if (this.constraintsGeometries.length == 0) {
             // init constraint geometries:
@@ -418,9 +424,12 @@ export default class ParticleSystem extends Geometry {
                 let constraintGeometry = new THREE.Geometry();
                 constraintGeometry.vertices.push(posA);
                 constraintGeometry.vertices.push(posB);
-                let line = new THREE.Line(constraintGeometry, material);
-                this.scene.add(line);
                 this.constraintsGeometries.push(constraintGeometry)
+
+                let line = new THREE.Line(constraintGeometry, material);
+
+                this.scene.add(line);
+                this.constraintsLines.push(line);
             }
         }
     }

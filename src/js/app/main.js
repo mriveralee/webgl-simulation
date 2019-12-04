@@ -171,6 +171,8 @@ export default class Main {
         this.particleSystem.integrate(timeStep);
       }
     }
+    this.particleSystem.visualizeConstraints(Config.simulation.visualizeConstraints);
+
     this.renderer.render(this.scene, this.camera.threeCamera);
 
     // rStats has finished determining render call now
