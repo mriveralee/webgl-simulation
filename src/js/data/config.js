@@ -89,9 +89,9 @@ var config = {
     mesh: {
         pointSize: 0.7,
         enableHelper: false,
-        wireframe: true,
+        wireframe: false,
         translucent: false,
-        showPoints: true,
+        showPoints: false,
         opacity: 1.0,
         material: {
             color: 0xffffff,
