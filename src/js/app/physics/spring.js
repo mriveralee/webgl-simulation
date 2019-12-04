@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 
 export default class Spring {
-  constructor(particleIndexA, particleIndexB, restLength, stiffness = 1000) {
+  constructor(particleIndexA, particleIndexB, restLength, stiffness = 1000, identifier=0) {
     // Ensure its a number :)
     this.indexA = +particleIndexA;
     this.indexB = +particleIndexB;
     this.restLength = +restLength;
     this.stiffness = +stiffness;
+    this.id = identifier;
   }
 
   resolveConstraint(positions, forces) {
