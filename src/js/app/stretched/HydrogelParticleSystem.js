@@ -214,7 +214,7 @@ export default class ParticleSystem extends Geometry {
     _resolveFloorConstraint(vertices, zPosition) {
         for (let i = 0; i < vertices.length; i++) {
             if (Math.abs(vertices[i].z - zPosition) <= 0.0001) {
-                vertices[i].add(new THREE.Vector3(0,0, zPosition));
+                vertices[i].setComponent(2, zPosition);
             }
         }
 
