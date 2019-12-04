@@ -160,8 +160,13 @@ export default class ParticleSystem extends Geometry {
     }
 
     resolveConstraints() {
+
         if (Config.simulation.avoidSelfIntersections) {
             this._resolveSelfIntersections(this.geo.vertices, Config.simulation.fabricSelfIntersectionsMinDist);
+        }
+
+        if (Config.simulation.useFloorConstraint) {
+            this._resolveFloorConstraint(this.geo.vertices, 0);
         }
 
         // REsolve other constraints
@@ -169,10 +174,7 @@ export default class ParticleSystem extends Geometry {
             this.constraints[i].resolveConstraint(this.geo.vertices, this.forces);
         }
 
-        if (Config.simulation.useFloorConstraint) {
-            this._resolveFloorConstraint(this.geo.vertices, 0);
 
-        }
     }
 
     visualizeConstraints(shouldVisualizeConstraints) {
@@ -214,7 +216,7 @@ export default class ParticleSystem extends Geometry {
     _resolveFloorConstraint(vertices, zPosition) {
         for (let i = 0; i < vertices.length; i++) {
             if (Math.abs(vertices[i].z - zPosition) <= 0.0001) {
-                vertices[i].setComponent(2, zPosition);
+                vertices[i].add(new THREE.Vector3(0, 0, -1 * (vertices[i].z - zPosition)));
             }
         }
 

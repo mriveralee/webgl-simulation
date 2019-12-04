@@ -25,8 +25,8 @@ var config = {
             structuralSpringStiffnessY: 873,
             bendSpringStiffnessX: 318.6,
             bendSpringStiffnessY: 649.1,
-            shearSpringStiffnessXY: 673,
-            shearSpringStiffnessYX: 0,
+            shearSpringStiffnessXY: 980,
+            shearSpringStiffnessYX: 142,
             particleMass: 1, //1/1000,
         },
         hydrogel: {
@@ -43,7 +43,7 @@ var config = {
             Y: 30,
             spacing: particleSpacing,
         },
-        biasOffsetZ: -4,
+        biasOffsetZ: 4.1,
         useDragForce: false,
         coefficientOfDrag: 1.28,// 0.5, // 1.28 for flat sheet; 0.5 for sphere
         avoidSelfIntersections: true,

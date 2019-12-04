@@ -62,6 +62,12 @@ export default class SceneHelper {
     return axis;
   }
 
+  static createPlane(scene, dir) {
+      var plane = new THREE.Plane(new THREE.Vector3(...dir), 0);
+    var helper = new THREE.PlaneHelper(plane, 1, 0xffff00 );
+    scene.add(helper);
+  }
+
   static createGrid(scene, size, divisions) {
       let gridHelper = new THREE.GridHelper(size, divisions);
       scene.add(gridHelper);

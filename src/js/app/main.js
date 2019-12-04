@@ -223,6 +223,7 @@ export default class Main {
     if (Config.showGrid) {
         SceneHelper.createGrid(this.scene, gridSize, gridDivisions)
     }
+    SceneHelper.createPlane(this.scene, [0, 0, 1]);
     this._restoreConfig();
   }
 
