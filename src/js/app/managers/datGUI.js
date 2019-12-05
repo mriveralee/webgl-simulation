@@ -118,20 +118,20 @@ export default class DatGUI {
 
     const fabricParametersFolder = gui.addFolder('Fabric');
     fabricParametersFolder.add(Config.simulation.fabric, 'particleMass', 0.00001, 100, 0.001).name('Mass');
-    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessX', 0, 1000, 0.001).name('Str. Stiff X');
-    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessY', 0, 1000, 0.001).name('Str. Stiff Y');
-    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessX', 0, 1000, 0.001).name('Bend Stiffness X');
-    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessY', 0, 1000, 0.001).name('Bend Stiffness Y');
-    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffnessXY', 0, 1000, 0.1).name('Shear XY Stiff. ');
-    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffnessYX', 0, 1000, 0.1).name('Shear YX Stiff. ');
+    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessX', 0, 3000, 0.001).name('Str. Stiff X');
+    fabricParametersFolder.add(Config.simulation.fabric, 'structuralSpringStiffnessY', 0, 3000, 0.001).name('Str. Stiff Y');
+    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessX', 0, 3000, 0.001).name('Bend Stiffness X');
+    fabricParametersFolder.add(Config.simulation.fabric, 'bendSpringStiffnessY', 0, 3000, 0.001).name('Bend Stiffness Y');
+    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffnessXY', 0, 3000, 0.1).name('Shear XY Stiff. ');
+    fabricParametersFolder.add(Config.simulation.fabric, 'shearSpringStiffnessYX', 0, 3000, 0.1).name('Shear YX Stiff. ');
 
     fabricParametersFolder.open();
 
     const hydrogelParametersFolder = gui.addFolder('Hydrogel');
     hydrogelParametersFolder.add(Config.simulation.hydrogel, 'particleMass', 0.00001, 100, 0.001).name('Mass');
     hydrogelParametersFolder.add(Config.simulation.hydrogel, 'layerHeight', 0.1, 15, 0.1).name('Layer Height');
-    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessZ', 0, 1000, 0.001).name('Stiffness Z');
-    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessXY', 0, 1000, 0.001).name('Stiffness XY');
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessZ', 0, 3000, 0.001).name('Stiffness Z');
+    hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springStiffnessXY', 0, 3000, 0.001).name('Stiffness XY');
     hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springShrinkRatioZ', 0.01, 1.1, 0.001).name('Shrink Ratio Z');
     hydrogelParametersFolder.add(Config.simulation.hydrogel, 'springShrinkRatioXY', 0.01 , 1.1, 0.001).name('Shrink Ratio XY');
     hydrogelParametersFolder.add(Config.simulation.hydrogel, 'hydrogelColumns', 1, Config.simulation.gridDim.X, 1).name('Column Count');
