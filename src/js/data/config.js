@@ -26,7 +26,7 @@ var config = {
             bendSpringStiffnessX: 1664,
             bendSpringStiffnessY: 1876,
             shearSpringStiffnessXY: 1168,
-            shearSpringStiffnessYX: 350,
+            shearSpringStiffnessYX: 885,
             particleMass: 1, //1/1000,
         },
         hydrogel: {
