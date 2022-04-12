@@ -9,7 +9,7 @@ var getGravity = () => {
 var getUpComponents = () => {
     return [0, 0, 1];
 };
-const particleSpacing = 2;
+const particleSpacing = 1;
 
 var config = {
     isDev: false,
@@ -35,12 +35,12 @@ var config = {
             springStiffnessXY: 1983,
             springShrinkRatioZ: 0.69,
             springShrinkRatioXY: 0.98,
-            hydrogelColumns: 15,
+            hydrogelColumns: 8,
             particleMass: 1,
         },
         gridDim: {
-            X: 30,
-            Y: 30,
+            X: 31, // expected width + 1 since we are counting the spaces not the points
+            Y: 31,
             spacing: particleSpacing,
         },
         biasOffsetZ: 4.1,

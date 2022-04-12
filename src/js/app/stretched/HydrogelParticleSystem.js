@@ -31,8 +31,10 @@ export default class ParticleSystem extends Geometry {
         this.hydrogelColumnSpacing = Math.max(
             1,
             Math.ceil((this.gridDim - this.hydrogelColumns) / (minSpaceCount)));
-        let remainder = Math.floor(
-            (this.gridDim - this.hydrogelColumnSpacing * (minSpaceCount)) % this.hydrogelColumns);
+        //let remainder = Math.floor(
+        //    (this.gridDim - this.hydrogelColumnSpacing * (minSpaceCount)) % this.hydrogelColumns);
+        let remainder =
+            (this.gridDim - this.hydrogelColumnSpacing * (minSpaceCount)) % this.hydrogelColumns;
 
         this.hydrogelStartColumn = Math.floor(remainder / 2);
         this.hydrogelParticles =  this.gridDim * this.hydrogelColumns;
